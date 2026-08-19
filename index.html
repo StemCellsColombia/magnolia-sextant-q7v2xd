@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.21h — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.23 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -3251,10 +3251,15 @@ function togglePcat(head){
 
 const DRAFT_KEY = 'scc_draft_actual';
 function saveDraft() {
+  /* Ahora guarda dentro de la bandeja de pacientes, no en la gaveta única.
+     Ver el bloque BANDEJA DE PACIENTES al final del script (19-ago-2026). */
   try {
-    const data = collectPatientData();
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-    alert('✅ Borrador guardado. Si recargas la página por error, podrás recuperarlo.');
+    if(typeof pacGuardarActual === 'function'){
+      if(!pacGuardarActual(false)) alert('Escribe primero el nombre del paciente para poder guardarlo.');
+      return;
+    }
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(collectPatientData()));
+    alert('✅ Borrador guardado.');
   } catch(e) { alert('No se pudo guardar el borrador: ' + e.message); }
 }
 // Auto-guardado silencioso (se llama solo, sin alert)
@@ -3265,7 +3270,7 @@ function autoSaveDraft() {
     try {
       const name = (document.getElementById('fullName')||{}).value.trim();
       if(!name) return; // no guardar borradores vacíos
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(collectPatientData()));
+      if(typeof pacGuardarActual==='function') pacGuardarActual(true);
       const ind = document.getElementById('autoSaveIndicator');
       if(ind){ ind.textContent = '💾 Guardado automático ' + new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}); ind.style.opacity='1'; setTimeout(()=>{ if(ind) ind.style.opacity='0.5'; }, 2000); }
     } catch(e) {}
@@ -8986,7 +8991,7 @@ document.addEventListener('input', function(e){
   }
 });
 // Al cargar, ofrecer restaurar el borrador anterior (si lo hay)
-setTimeout(function(){ try { offerDraftRestore(); } catch(e){} }, 800);
+/* offerDraftRestore() retirado: la bandeja de pacientes ya conserva a todos (19-ago-2026) */
 try { renderBonus(); } catch(e) { console.warn("renderBonus:", e); }
 
 
@@ -9203,6 +9208,244 @@ function montarBotonContactos(){
 }
 (function arrancaContactos(){
   const go = ()=>{ try{ montarBotonContactos(); pintarTel24(); }catch(e){ console.warn('contactos:', e.message); } };
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
+  else go();
+})();
+
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BANDEJA DE PACIENTES (Alejo, 19-ago-2026) — FASE 1
+   ---------------------------------------------------------------------------
+   ANTES: una sola gaveta (DRAFT_KEY = 'scc_draft_actual'). Si un paciente
+   quedaba esperando el vuelo y entraba otro, habia que ELEGIR: empezar el
+   nuevo pisaba al anterior. Por eso el equipo esperaba a tener todos los datos
+   antes de empezar — dejar a alguien a medias bloqueaba la herramienta entera.
+   Ese era el cuello de botella real, no los datos que faltaban.
+   AHORA: muchos pacientes en paralelo. Se apoya en collectPatientData() /
+   applyPatientData(), que ya serializaban y restauraban el paciente COMPLETO
+   (campos, tratamientos, citas, toggles y el schedule editado). Lo unico que
+   cambia es donde se guarda: de una clave a una lista.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const PAC_STORE  = 'scc_pacientes_v1';
+const PAC_ACTIVO = 'scc_paciente_activo';
+
+function pacTodos(){
+  try{ return JSON.parse(localStorage.getItem(PAC_STORE) || '{}'); }catch(e){ return {}; }
+}
+function pacGuardarTodos(o){
+  try{ localStorage.setItem(PAC_STORE, JSON.stringify(o)); return true; }
+  catch(e){ alert('No se pudo guardar: se lleno el espacio del navegador. Archiva pacientes viejos.'); return false; }
+}
+function pacActivoId(){ return localStorage.getItem(PAC_ACTIVO) || ''; }
+function pacSetActivo(id){ try{ localStorage.setItem(PAC_ACTIVO, id||''); }catch(e){} }
+function pacNuevoId(){ return 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+/* Resumen que se ve en la bandeja, sacado de los datos ya serializados. */
+function pacMeta(data){
+  const f = (data && data.fields) || {};
+  return {
+    nombre: (f.fullName||'').trim() || '(sin nombre)',
+    scc:    (f.sccNum||'').trim(),
+    inicio: f.tstart || '',
+    trats:  (data && data.treats) ? data.treats.length : 0
+  };
+}
+
+/* Que le falta a este paciente. Se apoya en el mapa real de dependencias: lo
+   clinico ya alcanza para Incodol/Innocell/VITAL; lo de viaje solo lo piden
+   Calendar-transfers, el correo al hotel y el Schedule. */
+function pacPendientes(data){
+  const f = (data && data.fields) || {};
+  const t = (data && data.toggles) || {};
+  const p = [];
+  if(!(f.fullName||'').trim()) p.push('nombre');
+  if(!(f.sccNum||'').trim())   p.push('N SCC');
+  if(!(data && data.treats && data.treats.length)) p.push('tratamiento');
+  if(t['sw-arr-in'] && !(f.arrInTime||'').trim())  p.push('hora de llegada');
+  if(t['sw-arr-out']&& !(f.arrOutTime||'').trim()) p.push('hora de salida');
+  if(t['sw-hotel']  && !(f.hotelIn||'').trim())    p.push('check-in hotel');
+  const sinFecha = ((data && data.consults)||[]).filter(function(c){ return !c.date || !c.time; }).length;
+  if(sinFecha) p.push(sinFecha + (sinFecha===1 ? ' cita sin confirmar' : ' citas sin confirmar'));
+  return p;
+}
+
+/* Guarda el formulario actual dentro del paciente activo. Si no hay activo y
+   ya hay un nombre escrito, crea uno — asi nunca se pierde trabajo por
+   olvidar apretar "nuevo". */
+function pacGuardarActual(silencioso){
+  const nombre = ((document.getElementById('fullName')||{}).value||'').trim();
+  if(!nombre) return false;
+  const data = collectPatientData();
+  const todos = pacTodos();
+  let id = pacActivoId();
+  /* ⚠ No pisar a otro paciente. Si el activo apunta a alguien con OTRO
+     nombre, lo que hay en pantalla es un paciente distinto (pasa al migrar
+     desde la version vieja, o si alguien escribe encima sin abrir la
+     bandeja): se guarda como nuevo en vez de sobrescribir al que estaba. */
+  if(id && todos[id]){
+    const guardado = ((todos[id].data && todos[id].data.fields && todos[id].data.fields.fullName) || '').trim();
+    if(guardado && guardado !== nombre){ id = ''; }
+  }
+  if(!id || !todos[id]){ id = pacNuevoId(); pacSetActivo(id); }
+  todos[id] = { data: data, archivado: (todos[id] && todos[id].archivado) || false };
+  if(!pacGuardarTodos(todos)) return false;
+  if(!silencioso) alert('Guardado: ' + nombre);
+  pintarBotonBandeja();
+  return true;
+}
+
+function pacAbrir(id){
+  const todos = pacTodos();
+  const reg = todos[id];
+  if(!reg) return;
+  pacGuardarActual(true);
+  pacSetActivo(id);
+  applyPatientData(reg.data);
+  cerrarBandeja();
+  pintarBotonBandeja();
+}
+
+function pacNuevo(){
+  pacGuardarActual(true);
+  pacSetActivo('');
+  newPatient(true);
+  cerrarBandeja();
+  pintarBotonBandeja();
+  const n = document.getElementById('fullName'); if(n) n.focus();
+}
+
+function pacArchivar(id, ev){
+  if(ev) ev.stopPropagation();
+  const todos = pacTodos();
+  if(!todos[id]) return;
+  const m = pacMeta(todos[id].data);
+  if(!todos[id].archivado && !confirm('Archivar a ' + m.nombre + '?\n\nSe deja de ver en la bandeja pero no se borra.')) return;
+  todos[id].archivado = !todos[id].archivado;
+  pacGuardarTodos(todos);
+  abrirBandeja();
+}
+
+function pacBorrar(id, ev){
+  if(ev) ev.stopPropagation();
+  const todos = pacTodos();
+  if(!todos[id]) return;
+  const m = pacMeta(todos[id].data);
+  if(!confirm('BORRAR a ' + m.nombre + ' definitivamente?\n\nEsto no se puede deshacer.')) return;
+  delete todos[id];
+  pacGuardarTodos(todos);
+  if(pacActivoId()===id) pacSetActivo('');
+  abrirBandeja();
+  pintarBotonBandeja();
+}
+
+/* Migracion del borrador unico de la version anterior. Corre una sola vez. */
+function pacMigrarDraftViejo(){
+  try{
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    const nombre = (data.fields && data.fields.fullName) ? data.fields.fullName.trim() : '';
+    if(!nombre){ localStorage.removeItem(DRAFT_KEY); return; }
+    const todos = pacTodos();
+    const yaEsta = Object.keys(todos).some(function(k){
+      const f = todos[k].data && todos[k].data.fields;
+      return f && (f.fullName||'').trim() === nombre;
+    });
+    if(!yaEsta){
+      const id = pacNuevoId();
+      todos[id] = { data: data, archivado:false };
+      pacGuardarTodos(todos);
+      /* No se marca como activo a proposito: el formulario en pantalla puede
+         ser otro. Queda en la bandeja y el asesor lo abre cuando quiera. */
+    }
+    localStorage.removeItem(DRAFT_KEY);
+  }catch(e){}
+}
+
+/* ── UI ─────────────────────────────────────────────────────────────────── */
+function cerrarBandeja(){ const m=document.getElementById('bandejaModal'); if(m) m.remove(); }
+
+function _pacFila(id, reg, arch, activo){
+  const m = pacMeta(reg.data);
+  const falta = pacPendientes(reg.data);
+  const esActivo = (id === activo);
+  const chip = falta.length
+    ? '<span style="background:#F7EDDD;color:#96550A;border-radius:3px;padding:3px 7px;font-size:11.5px;font-weight:600">Falta: ' + falta.slice(0,3).join(' · ') + (falta.length>3 ? ' +'+(falta.length-3) : '') + '</span>'
+    : '<span style="background:#E3F0E9;color:#1B6E48;border-radius:3px;padding:3px 7px;font-size:11.5px;font-weight:600">Completo</span>';
+  return '<div onclick="pacAbrir(&quot;'+id+'&quot;)" style="cursor:pointer;border:1px solid '+(esActivo?'#2A4B8D':'#DCE0E8')+';background:'+(esActivo?'#F2F6FD':'#fff')+';border-radius:8px;padding:12px 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">'
+    + '<div style="flex:1;min-width:190px">'
+      + '<div style="font-weight:700;font-size:15px;color:#111823">' + (m.scc ? '#'+m.scc+' · ' : '') + m.nombre + (esActivo ? ' <span style="font-size:11px;color:#2A4B8D;font-weight:600">— abierto</span>' : '') + '</div>'
+      + '<div style="font-size:12.5px;color:#7C8798;margin-top:2px">' + (m.inicio ? ('Tratamiento: '+m.inicio) : 'sin fecha de tratamiento') + ' · ' + m.trats + ' tratamiento(s)</div>'
+    + '</div>'
+    + '<div>' + chip + '</div>'
+    + '<div style="display:flex;gap:4px">'
+      + '<button onclick="pacArchivar(&quot;'+id+'&quot;,event)" title="'+(arch?'Devolver a la bandeja':'Archivar')+'" style="border:1px solid #DCE0E8;background:#fff;border-radius:6px;padding:5px 9px;cursor:pointer;font-size:13px">'+(arch?'↩':'📥')+'</button>'
+      + '<button onclick="pacBorrar(&quot;'+id+'&quot;,event)" title="Borrar" style="border:1px solid #DCE0E8;background:#fff;border-radius:6px;padding:5px 9px;cursor:pointer;font-size:13px">🗑</button>'
+    + '</div>'
+  + '</div>';
+}
+
+function abrirBandeja(){
+  cerrarBandeja();
+  pacGuardarActual(true);
+  const todos = pacTodos();
+  const activo = pacActivoId();
+  const ids = Object.keys(todos);
+  const vivos = ids.filter(function(k){ return !todos[k].archivado; });
+  const arch  = ids.filter(function(k){ return todos[k].archivado; });
+  const orden = function(a,b){
+    const ma = pacMeta(todos[a].data), mb = pacMeta(todos[b].data);
+    return (ma.inicio||'9999').localeCompare(mb.inicio||'9999');
+  };
+  vivos.sort(orden); arch.sort(orden);
+
+  const cap = document.createElement('div');
+  cap.id = 'bandejaModal';
+  cap.style.cssText = 'position:fixed;inset:0;background:rgba(12,18,28,.55);z-index:9997;display:flex;align-items:flex-start;justify-content:center;padding:36px 18px;overflow:auto';
+  cap.innerHTML =
+    '<div style="background:#F6F7FA;border-radius:14px;max-width:760px;width:100%;padding:24px 26px;font-family:system-ui,sans-serif;box-shadow:0 24px 70px rgba(0,0,0,.35)">'
+    + '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:4px">'
+      + '<h3 style="margin:0;font-size:21px;color:#111823">Pacientes en curso</h3>'
+      + '<span style="font-size:13px;color:#7C8798">' + vivos.length + ' activo(s)</span>'
+      + '<button onclick="pacNuevo()" style="margin-left:auto;background:#2A4B8D;color:#fff;border:0;border-radius:8px;padding:9px 16px;font-weight:600;cursor:pointer">+ Paciente nuevo</button>'
+    + '</div>'
+    + '<p style="margin:0 0 16px;font-size:13.5px;color:#4C5766;line-height:1.5">Puedes dejar a uno esperando el vuelo y trabajar otro. Nada se pisa.</p>'
+    + (vivos.length
+        ? '<div style="display:flex;flex-direction:column;gap:9px">' + vivos.map(function(id){ return _pacFila(id, todos[id], false, activo); }).join('') + '</div>'
+        : '<div style="background:#fff;border:1px dashed #BFC6D2;border-radius:9px;padding:26px;text-align:center;color:#7C8798;font-size:14px">Todavia no hay pacientes guardados.<br>Escribe un nombre en el formulario y aparecera aqui solo.</div>')
+    + (arch.length
+        ? '<div style="margin-top:20px"><div style="font-size:12px;font-weight:700;color:#7C8798;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Archivados (' + arch.length + ')</div><div style="display:flex;flex-direction:column;gap:9px;opacity:.72">' + arch.map(function(id){ return _pacFila(id, todos[id], true, activo); }).join('') + '</div></div>'
+        : '')
+    + '<div style="display:flex;margin-top:20px"><button onclick="cerrarBandeja()" style="margin-left:auto;background:transparent;border:0;color:#4C5766;padding:9px 12px;cursor:pointer;font-size:14px">Cerrar</button></div>'
+    + '</div>';
+  cap.addEventListener('click', function(e){ if(e.target===cap) cerrarBandeja(); });
+  document.body.appendChild(cap);
+}
+
+function pintarBotonBandeja(){
+  const b = document.getElementById('bandejaBtn');
+  if(!b) return;
+  const todos = pacTodos();
+  const n = Object.keys(todos).filter(function(k){ return !todos[k].archivado; }).length;
+  b.textContent = n ? ('🗂 Pacientes (' + n + ')') : '🗂 Pacientes';
+}
+
+function montarBotonBandeja(){
+  if(document.getElementById('bandejaBtn')) return;
+  const b = document.createElement('button');
+  b.id = 'bandejaBtn';
+  b.style.cssText = 'position:fixed;right:14px;bottom:14px;z-index:9996;background:#2A4B8D;color:#fff;border:0;border-radius:999px;padding:11px 18px;font:600 14px system-ui,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25)';
+  b.onclick = function(){ abrirBandeja(); };
+  document.body.appendChild(b);
+  pintarBotonBandeja();
+}
+
+(function arrancaBandeja(){
+  const go = function(){
+    try{ pacMigrarDraftViejo(); montarBotonBandeja(); }
+    catch(e){ console.warn('bandeja:', e.message); }
+  };
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
   else go();
 })();
