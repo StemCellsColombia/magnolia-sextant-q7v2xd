@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.24 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.25 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1146,7 +1146,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--gl);color:var(--dk);min-h
 <!-- ─────── FORM LINK CONFIG ─────── -->
 <div style="background:var(--of);border:1.5px solid var(--teal);border-radius:10px;padding:14px 18px;margin:18px 0 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
   <div style="font-size:13px;font-weight:700;color:var(--db);white-space:nowrap">🔗 Link del formulario virtual</div>
-  <input id="formLinkInput" type="url" value="https://forms.gle/TU_LINK_AQUI" style="flex:1;min-width:220px;padding:7px 11px;border:1.5px solid var(--bd);border-radius:7px;font-size:12px;font-family:inherit" oninput="updateAllPrompts()" placeholder="https://forms.gle/...">
+  <input id="formLinkInput" type="url" value="https://stemcellscolombia.github.io/magnolia-sextant-q7v2xd/formulario.html" style="flex:1;min-width:220px;padding:7px 11px;border:1.5px solid var(--bd);border-radius:7px;font-size:12px;font-family:inherit" oninput="updateAllPrompts()" placeholder="https://forms.gle/...">
   <div style="font-size:11px;color:var(--gr)">Este link se inserta automáticamente en todos los mensajes que lo necesiten.</div>
 </div>
 
@@ -3254,7 +3254,7 @@ function refreshSheetPreviews() {
 // COPY
 function copyEl(id) { navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>alert('✅ Copiado!')); }
 function updateAllPrompts() {
-  const link = (document.getElementById('formLinkInput') || {}).value || 'https://forms.gle/TU_LINK_AQUI';
+  const link = (document.getElementById('formLinkInput') || {}).value || 'https://stemcellscolombia.github.io/magnolia-sextant-q7v2xd/formulario.html';
   document.querySelectorAll('.prompt-body').forEach(el => {
     if (el.dataset.originalText === undefined) el.dataset.originalText = el.textContent;
     // replace [FORM_LINK] in the text content preserving other markup
@@ -9436,7 +9436,8 @@ function abrirBandeja(){
     + '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:4px">'
       + '<h3 style="margin:0;font-size:21px;color:#111823">Pacientes en curso</h3>'
       + '<span style="font-size:13px;color:#7C8798">' + vivos.length + ' activo(s)</span>'
-      + '<button onclick="pacNuevo()" style="margin-left:auto;background:#2A4B8D;color:#fff;border:0;border-radius:8px;padding:9px 16px;font-weight:600;cursor:pointer">+ Paciente nuevo</button>'
+      + '<button onclick="importarRespuestaForm()" style="margin-left:auto;background:#0E7C6B;color:#fff;border:0;border-radius:8px;padding:9px 14px;font-weight:600;cursor:pointer" title="Pega la respuesta que el paciente devolvio por WhatsApp">&#128229; Respuesta del paciente</button>'
+    + '<button onclick="pacNuevo()" style="background:#2A4B8D;color:#fff;border:0;border-radius:8px;padding:9px 16px;font-weight:600;cursor:pointer">+ Paciente nuevo</button>'
     + '</div>'
     + '<p style="margin:0 0 16px;font-size:13.5px;color:#4C5766;line-height:1.5">Puedes dejar a uno esperando el vuelo y trabajar otro. Nada se pisa.</p>'
     + (vivos.length
@@ -9631,6 +9632,96 @@ let _semT = null;
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', go);
   else setTimeout(go, 300);
 })();
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   IMPORTAR RESPUESTA DEL FORMULARIO (Alejo, 19-ago-2026) — FASE 4
+   ---------------------------------------------------------------------------
+   El paciente llena formulario.html (publicado junto a esta herramienta) y
+   devuelve por WhatsApp un mensaje que termina en un codigo "SCC1.xxxx".
+   Aqui se pega ese mensaje COMPLETO (no hace falta recortar el codigo) y los
+   vuelos, el acompanante y las noches extra caen solos en el paciente que
+   corresponda — nadie transcribe nada. Sin backend: el dato viaja por el
+   chat que ya existe.
+   ═══════════════════════════════════════════════════════════════════════════ */
+function _formDecode(texto){
+  const m = String(texto||'').match(/SCC1\.([A-Za-z0-9+\/=]+)/);
+  if(!m) return null;
+  try{
+    let b64 = m[1]; while(b64.length % 4) b64 += '=';
+    return JSON.parse(decodeURIComponent(escape(atob(b64))));
+  }catch(e){ return null; }
+}
+
+function importarRespuestaForm(){
+  const texto = prompt('Pega aqui el mensaje COMPLETO que el paciente devolvio por WhatsApp\n(el que termina en un codigo SCC1.xxxx):');
+  if(!texto) return;
+  const d = _formDecode(texto);
+  if(!d){ alert('No encontre un codigo valido en ese texto.\n\nAsegurate de copiar el mensaje entero, incluida la ultima linea (SCC1.xxxx).'); return; }
+
+  // A que paciente va: si el nombre coincide con uno de la bandeja, a ese;
+  // si no, al que este abierto (con confirmacion).
+  const todos = pacTodos();
+  const nombreForm = (d.n||'').trim().toLowerCase();
+  let idDestino = '';
+  if(nombreForm){
+    idDestino = Object.keys(todos).find(function(k){
+      const f = todos[k].data && todos[k].data.fields;
+      return f && (f.fullName||'').trim().toLowerCase() === nombreForm;
+    }) || '';
+  }
+  const abierto = ((document.getElementById('fullName')||{}).value||'').trim();
+  if(idDestino && idDestino !== pacActivoId()){
+    const nm = todos[idDestino].data.fields.fullName;
+    if(!confirm('Esta respuesta es de "' + nm + '". ¿Abrirlo y aplicarla ahi?')) return;
+    pacAbrir(idDestino);
+  } else if(!idDestino && nombreForm && abierto && abierto.toLowerCase() !== nombreForm){
+    if(!confirm('La respuesta dice "' + d.n + '" pero tienes abierto a "' + abierto + '".\n\n¿Aplicarla igual sobre ' + abierto + '?')) return;
+  }
+
+  const resumen = [];
+  const set = function(id, val, etiqueta){
+    if(!val) return;
+    const e = document.getElementById(id); if(!e) return;
+    e.value = val; resumen.push(etiqueta + ': ' + val);
+  };
+  const prende = function(k, esTransfer){
+    const sw = document.getElementById('sw-' + k);
+    if(sw && !sw.classList.contains('on')){
+      if(esTransfer && typeof togTransfer==='function') togTransfer(k);
+      else if(typeof togInc==='function') togInc(k);
+    }
+  };
+  if(d.ai && (d.ai.d || d.ai.t)){
+    prende('trans'); prende('arr-in', true);
+    set('arrInDate', d.ai.d, 'Llegada');
+    set('arrInTime', d.ai.t, 'Hora llegada');
+    set('arrInFlight', [d.ai.a, d.ai.f].filter(Boolean).join(' '), 'Vuelo llegada');
+  }
+  if(d.ao && (d.ao.d || d.ao.t)){
+    prende('trans'); prende('arr-out', true);
+    set('arrOutDate', d.ao.d, 'Salida');
+    set('arrOutTime', d.ao.t, 'Hora salida');
+    set('arrOutFlight', [d.ao.a, d.ao.f].filter(Boolean).join(' '), 'Vuelo salida');
+  }
+  if(d.comp === 'SOLO'){ set('companion', 'Solo', 'Viaja'); }
+  else if(d.comp){ set('companion', d.comp, 'Acompanante'); set('companionRel', d.rel, 'Relacion'); }
+  if(d.xn && d.xn !== '0') set('hotelExtraNights', d.xn, 'Noches extra');
+  // La fecha del vuelo tambien alimenta llegada/salida generales si estaban vacias
+  if(d.ai && d.ai.d && !((document.getElementById('arrival')||{}).value)) set('arrival', d.ai.d, 'Fecha llegada (general)');
+  if(d.ao && d.ao.d && !((document.getElementById('dep')||{}).value)) set('dep', d.ao.d, 'Fecha salida (general)');
+
+  if(typeof updateHotelPrompt==='function') updateHotelPrompt();
+  if(typeof updatePatientPrompts==='function') updatePatientPrompts();
+  if(typeof renderSemaforo==='function') renderSemaforo();
+  if(typeof pacGuardarActual==='function') pacGuardarActual(true);
+
+  const nota = (d.notas||'').trim();
+  alert('✅ Respuesta aplicada' + (d.n ? (' — ' + d.n) : '') + ':\n\n' +
+    (resumen.length ? resumen.join('\n') : '(no traia datos nuevos)') +
+    (nota ? ('\n\n📝 Nota del paciente: "' + nota + '" — esta NO se guarda sola, anotala donde corresponda.') : '') +
+    '\n\nRevisa el semaforo: lo que estaba en ESPERA ya deberia estar LISTO.');
+}
 
 </script>
 </body>
