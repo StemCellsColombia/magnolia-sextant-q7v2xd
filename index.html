@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.23 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.24 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -738,6 +738,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--gl);color:var(--dk);min-h
   <div class="ss" id="s3">
     <div class="stitle">Incluidos en el contrato</div>
     <div class="ssub">Activa solo lo que está en el quotation del paciente</div>
+    <!-- FASE 3 (19-ago-2026): datos que antes solo vivian en WhatsApp y en la
+         cabeza de quien atendio. Ahora son campos: el semaforo y la bandeja
+         los leen para decir que falta de verdad. -->
+    <div class="card">
+      <div class="ctitle">Viaje del paciente</div>
+      <div class="g3">
+        <div class="fld"><label>&iquest;Con qui&eacute;n viaja?</label><input type="text" id="companion" placeholder="Solo / nombre del acompa&ntilde;ante" class="di"></div>
+        <div class="fld"><label>Relaci&oacute;n del acompa&ntilde;ante</label><input type="text" id="companionRel" placeholder="Esposa, hijo, amigo..." class="di"></div>
+        <div class="fld"><label>Noches extra de hotel (paga el cliente)</label><input type="number" id="hotelExtraNights" min="0" placeholder="0" class="di" oninput="updateHotelPrompt()"></div>
+      </div>
+      <div style="font-size:11px;color:var(--gr);margin-top:8px">Si a&uacute;n no responde, d&eacute;jalo vac&iacute;o: el sem&aacute;foro lo mostrar&aacute; como pendiente en vez de perderse en el chat.</div>
+    </div>
     <div class="card">
       <div class="ctitle">Hotel</div>
       <div class="itog" id="it-hotel" onclick="togInc('hotel')">
@@ -862,6 +874,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--gl);color:var(--dk);min-h
       <div style="flex:1"><div style="font-family:'Playfair Display',serif;font-size:15px" id="pname">-</div><div style="font-size:11px;color:var(--gr);margin-top:2px" id="pstage">Etapa 1 - Solo sabemos que pagó</div></div>
       <div><div style="font-size:11px;color:var(--gr);margin-bottom:3px;text-align:right" id="ppct">0%</div><div class="pbw"><div class="pb" id="pbar" style="width:0%"></div></div></div>
     </div>
+    <div class="semaforo-slot"></div>
     <div class="success-box" id="calSuccessBox">
       <div style="font-size:13px;font-weight:600;color:var(--gn)">✅ Eventos creados en Google Calendar</div>
       <div style="font-size:12px;color:#065F46;margin-top:4px" id="calSuccessMsg"></div>
@@ -953,6 +966,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--gl);color:var(--dk);min-h
 <div class="wrap">
   <div class="stitle">Google Sheets</div>
   <div class="ssub">Llena automáticamente los registros de Incodol, Innocell y VITAL</div>
+  <div class="semaforo-slot"></div>
 
   <div class="card" style="background:var(--amp);border-color:#FCD34D">
     <div style="font-size:13px;font-weight:600;color:#92400E;margin-bottom:6px">⚠️ Configuración requerida</div>
@@ -2488,6 +2502,8 @@ function updateHotelPrompt() {
     subject = `Nuevo Cliente - "${name}"`;
     body = `Reserva para cliente nuevo Sr. ${name},\nCheck in: ${fmtD(cin)}\nCheck out: ${fmtD(cout)}\n\nStem Cells Colombia cubre ${nights} noches en ${room}. Cliente paga extras.\n\nPor favor confirmar recibido.`;
   }
+  const extraN = parseInt((document.getElementById('hotelExtraNights')||{}).value,10)||0;
+  if(extraN>0) body += `\n\nAdicionalmente, el cliente tomar\u00e1 ${extraN} noche(s) extra por su cuenta (las paga directamente el cliente).`;
   hotelMail = { to, subject, body };
   document.getElementById('hotelPrompt').textContent = `Para: ${to}\nAsunto: ${subject}\n\n${body}`;
 }
@@ -3096,7 +3112,7 @@ function suggestConsults() {
 }
 
 function addConsult() {
-  initialConsults.push({ id: ++consultSeq, docKey:'luisa', date:'', time:'' });
+  initialConsults.push({ id: ++consultSeq, docKey:'luisa', date:'', time:'', status:'propuesta' });
   renderConsults();
 }
 
@@ -3142,6 +3158,15 @@ function renderConsults() {
       <div class="g2" style="margin:10px 0">
         <div class="fld"><label>Fecha de la cita</label><input type="date" value="${c.date}" onchange="updateConsult(${c.id},'date',this.value)"></div>
         <div class="fld"><label>Hora</label><input type="time" value="${c.time}" onchange="updateConsult(${c.id},'time',this.value)"></div>
+      </div>
+      <div class="fld" style="margin:0 0 10px">
+        <label>Estado de la cita</label>
+        <select class="di" style="border-left:4px solid ${({propuesta:'#96550A',doctor:'#2A4B8D',paciente:'#1B6E48'})[c.status||'propuesta']}"
+          onchange="updateConsult(${c.id},'status',this.value);renderConsults()">
+          <option value="propuesta" ${(c.status||'propuesta')==='propuesta'?'selected':''}>&#9203; Propuesta &mdash; sin confirmar</option>
+          <option value="doctor" ${c.status==='doctor'?'selected':''}>&#128104;&#8205;&#9877;&#65039; Confirmada por el doctor</option>
+          <option value="paciente" ${c.status==='paciente'?'selected':''}>&#9989; Confirmada por doctor y paciente</option>
+        </select>
       </div>
       <div class="appt-actions">
         <button class="appt-btn abtn-primary" onclick="createConsultFromList(${c.id})">📅 Crear en Calendar</button>
@@ -9265,8 +9290,11 @@ function pacPendientes(data){
   if(t['sw-arr-in'] && !(f.arrInTime||'').trim())  p.push('hora de llegada');
   if(t['sw-arr-out']&& !(f.arrOutTime||'').trim()) p.push('hora de salida');
   if(t['sw-hotel']  && !(f.hotelIn||'').trim())    p.push('check-in hotel');
-  const sinFecha = ((data && data.consults)||[]).filter(function(c){ return !c.date || !c.time; }).length;
-  if(sinFecha) p.push(sinFecha + (sinFecha===1 ? ' cita sin confirmar' : ' citas sin confirmar'));
+  if(t['sw-hotel']  && !(f.companion||'').trim())  p.push('con quien viaja');
+  const sinConf = ((data && data.consults)||[]).filter(function(c){
+    return !c.date || !c.time || (c.status||'propuesta')!=='paciente';
+  }).length;
+  if(sinConf) p.push(sinConf + (sinConf===1 ? ' cita sin confirmar' : ' citas sin confirmar'));
   return p;
 }
 
@@ -9450,6 +9478,159 @@ function montarBotonBandeja(){
   else go();
 })();
 
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SEMAFORO "QUE PUEDO MANDAR YA" (Alejo, 19-ago-2026) — FASE 2
+   ---------------------------------------------------------------------------
+   El equipo esperaba a tener TODO antes de mandar NADA, porque nadie sabia
+   que necesita cada salida. Este panel mete en codigo el mapa real de
+   dependencias (levantado el 19-ago): Incodol/Innocell/VITAL no leen vuelo
+   ni hotel — se pueden mandar el dia de la firma. Lo que si espera datos del
+   paciente queda en ambar con SU dato faltante, no con "faltan datos".
+   ═══════════════════════════════════════════════════════════════════════════ */
+function _v(id){ return ((document.getElementById(id)||{}).value||'').trim(); }
+function _on(id){ const e=document.getElementById(id); return !!(e && e.classList.contains('on')); }
+
+function semaforoEstado(){
+  const S = [];
+  const nombre = _v('fullName'), doc = _v('docNum');
+  const clinicos = ['iv','back','joint','face','hair','pshot'].filter(k=>treats.has(k));
+
+  // ── Incodol: paciente + datos clinicos. CERO datos de viaje. ──
+  const incTreats = ['iv','back','joint','pshot'].filter(k=>treats.has(k));
+  if(incTreats.length){
+    const falta = [];
+    if(!nombre) falta.push('nombre');
+    if(!doc) falta.push('documento');
+    if(!_v('dob')) falta.push('fecha de nacimiento');
+    if(!_v('gender')) falta.push('genero');
+    if(treats.has('back') && !_v('procDate_back')) falta.push('fecha de columna');
+    if(treats.has('joint') && !_v('procDate_joint')) falta.push('fecha articular');
+    if(treats.has('pshot') && !_v('procDate_pshot')) falta.push('fecha P-Shot');
+    if(treats.has('iv') && !_v('iv2Date') && !_v('tstart')) falta.push('fecha del IV');
+    S.push({salida:'Hoja Incodol', listo:!falta.length, falta, nota:'No necesita vuelo ni hotel'});
+  }
+  // ── Innocell ──
+  if(clinicos.length){
+    const falta = [];
+    if(!nombre) falta.push('nombre');
+    if(!doc) falta.push('documento');
+    clinicos.forEach(k=>{
+      if(k==='iv'){ if(!_v('iv2Date') && !_v('tstart')) falta.push('fecha del IV'); }
+      else if(!_v('procDate_'+k)) falta.push('fecha de '+({back:'columna',joint:'articular',face:'facial',hair:'capilar',pshot:'P-Shot'})[k]);
+    });
+    S.push({salida:'Hoja Innocell', listo:!falta.length, falta, nota:'No necesita vuelo ni hotel'});
+  }
+  // ── VITAL (solo si hay algun PRP/Lisado) ──
+  if(typeof vitalApplies==='function' && vitalApplies()){
+    const falta = [];
+    if(!nombre) falta.push('nombre');
+    if(!_v('vitalFechaAplicacion')) falta.push('fecha de aplicacion');
+    if(!_v('vitalDoctor') && !_v('backDoc') && !_v('jointDoc')) falta.push('doctor');
+    S.push({salida:'Hoja VITAL', listo:!falta.length, falta, nota:'No necesita vuelo ni hotel'});
+  }
+  // ── Cancer Markers ──
+  if(treats.has('mrkr')){
+    const falta = [];
+    if(!_v('sccNum')) falta.push('N SCC');
+    if(!nombre) falta.push('nombre');
+    if(!_v('mrkrDate')) falta.push('fecha del examen');
+    S.push({salida:'Control Cancer Markers', listo:!falta.length, falta,
+            nota:'Reservar 3 dias antes de la toma'});
+  }
+  // ── Maestro ──
+  {
+    const falta = [];
+    if(!nombre) falta.push('nombre');
+    if(!_v('sccNum')) falta.push('N SCC');
+    S.push({salida:'Maestro', listo:!falta.length, falta, nota:'Se puede guardar desde el dia 1'});
+  }
+  // ── Calendar: procedimientos ──
+  if(clinicos.length || treats.has('mrkr') || treats.has('hip')){
+    const falta = [];
+    if(!nombre) falta.push('nombre');
+    if(!clinicos.some(k => k==='iv' ? (_v('iv2Date')||_v('tstart')) : _v('procDate_'+k))
+       && !_v('mrkrDate') && !_v('tstart')) falta.push('alguna fecha de procedimiento');
+    S.push({salida:'Calendar - procedimientos', listo:!falta.length, falta, nota:'No necesita el vuelo'});
+  }
+  // ── Calendar: transfers (aqui SI se espera al paciente) ──
+  if(_on('sw-trans') && (_on('sw-arr-in') || _on('sw-arr-out'))){
+    const falta = [];
+    if(_on('sw-arr-in')){ if(!_v('arrInDate')) falta.push('fecha de llegada'); if(!_v('arrInTime')) falta.push('hora de llegada'); }
+    if(_on('sw-arr-out')){ if(!_v('arrOutDate')) falta.push('fecha de salida'); if(!_v('arrOutTime')) falta.push('hora de salida'); }
+    S.push({salida:'Calendar - transfers', listo:!falta.length, falta,
+            nota:'El numero de vuelo NO hace falta para agendar (solo decora el evento)'});
+  }
+  // ── Correo al hotel ──
+  if(_on('sw-hotel')){
+    const falta = [];
+    if(!_v('hotelIn')) falta.push('check-in');
+    if(!_v('hotelOut')) falta.push('check-out');
+    if(!_v('hotelNights')) falta.push('noches');
+    if(!_v('companion')) falta.push('con quien viaja');
+    S.push({salida:'Correo al hotel', listo:!falta.length, falta, nota:'Unica salida que usa check-in/out'});
+  }
+  // ── Schedule PDF ──
+  {
+    const falta = [];
+    if(!nombre) falta.push('nombre');
+    const sinConfirmar = initialConsults.filter(c=>!c.date || !c.time || (c.status||'propuesta')!=='paciente').length;
+    if(sinConfirmar) falta.push(sinConfirmar + ' cita(s) sin confirmar');
+    if(_on('sw-arr-in') && !_v('arrInTime')) falta.push('hora de llegada');
+    S.push({salida:'Schedule PDF del paciente', listo:!falta.length, falta,
+            nota:'Se manda cuando todo este confirmado'});
+  }
+  return S;
+}
+
+function renderSemaforo(){
+  const slots = document.querySelectorAll('.semaforo-slot');
+  if(!slots.length) return;
+  const nombre = _v('fullName');
+  if(!nombre){
+    slots.forEach(sl=>{ sl.innerHTML=''; });
+    return;
+  }
+  const S = semaforoEstado();
+  const listos = S.filter(x=>x.listo).length;
+  const filas = S.map(x=>{
+    const chip = x.listo
+      ? '<span style="background:#E3F0E9;color:#1B6E48;border-radius:3px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap">LISTO</span>'
+      : '<span style="background:#F7EDDD;color:#96550A;border-radius:3px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap">ESPERA</span>';
+    const detalle = x.listo
+      ? '<span style="color:#7C8798;font-size:11.5px">' + x.nota + '</span>'
+      : '<span style="color:#96550A;font-size:12px;font-weight:600">Falta: ' + x.falta.join(' + ') + '</span>' +
+        (x.nota ? ' <span style="color:#7C8798;font-size:11.5px">- ' + x.nota + '</span>' : '');
+    return '<div style="display:flex;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px solid #EDEFF4">'
+      + chip
+      + '<span style="font-weight:600;font-size:13.5px;min-width:175px">' + x.salida + '</span>'
+      + '<span style="flex:1">' + detalle + '</span></div>';
+  }).join('');
+  const html =
+    '<div style="background:#fff;border:1.5px solid #DCE0E8;border-left:5px solid ' + (listos===S.length?'#1B6E48':'#2A4B8D') + ';border-radius:10px;padding:14px 18px;margin:14px 0">'
+    + '<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px">'
+    +   '<div style="font-weight:800;font-size:14px;color:#111823">&iquest;Qu&eacute; puedo mandar ya?</div>'
+    +   '<div style="font-size:12px;color:#7C8798">' + listos + ' de ' + S.length + ' salidas listas &mdash; lo verde no espera al paciente</div>'
+    + '</div>' + filas + '</div>';
+  slots.forEach(sl=>{ sl.innerHTML = html; });
+}
+
+/* Refresco: barato de calcular, asi que se recalcula ante cualquier cambio. */
+let _semT = null;
+['input','change','click'].forEach(ev=>{
+  document.addEventListener(ev, function(){
+    clearTimeout(_semT); _semT = setTimeout(renderSemaforo, 450);
+  }, true);
+});
+(function arrancaSemaforo(){
+  const go = function(){
+    try{ renderSemaforo(); if(typeof syncBdetoxPanel==='function') syncBdetoxPanel(); }
+    catch(e){ console.warn('semaforo:', e.message); }
+  };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', go);
+  else setTimeout(go, 300);
+})();
 
 </script>
 </body>
