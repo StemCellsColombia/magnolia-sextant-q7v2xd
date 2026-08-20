@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.28 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.29 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -8602,6 +8602,39 @@ function buildScheduleDraft(opts) {
   _draft.bonus = (_keepExtras.bonusCustom && Array.isArray(_keepExtras.bonusCustom)) ? _keepExtras.bonusCustom : bonus;
   Object.keys(_keepExtras).forEach(k=>{ if(k!=='bonusCustom') _draft[k]=_keepExtras[k]; });
 
+  /* ══ CORTESÍA: LIMPIEZA DENTAL (Alejo, 20-ago-2026) ══════════════════════
+     Todos los pacientes reciben una limpieza dental gratis de los aliados.
+     Regla de Alejo: va UNA HORA después del Blood Detox del primer día; en
+     casos capilares/faciales (sin detox), una hora después del Vitamin C IV.
+     Si el paciente no tiene ni detox ni Vitamin C, NO se inserta sola — el
+     asesor la agrega a mano en el editor (no hay ancla horaria confiable).
+     En el PDF sale resaltada como regalo (ver generateSchedulePDF). */
+  try{
+    let _cAncla = null, _cDia = null;
+    for(const d of (_draft.days||[])){
+      const r = (d.rows||[]).find(r=>/blood detox/i.test(r.name||''));
+      if(r && r._start){ _cAncla = r; _cDia = d; break; }
+    }
+    if(!_cAncla){
+      for(const d of (_draft.days||[])){
+        const r = (d.rows||[]).find(r=>/vitamin c/i.test(r.name||''));
+        if(r && r._start){ _cAncla = r; _cDia = d; break; }
+      }
+    }
+    if(_cDia && !_cDia.rows.some(r=>r.cortesia)){
+      const _cp = String(_cAncla._start).split(':').map(Number);
+      let _cm = _cp[0]*60 + (_cp[1]||0) + 60; if(_cm >= 1440) _cm -= 1440;
+      const _ct = String(Math.floor(_cm/60)).padStart(2,'0')+':'+String(_cm%60).padStart(2,'0');
+      _cDia.rows.push({
+        time: timeRange(_ct, 60), _start: _ct, cortesia: true, note: false,
+        name: ES ? 'Limpieza dental de cortesía' : 'Courtesy dental cleaning',
+        desc: ES ? 'Un regalo de Stem Cells Colombia y nuestros aliados — sin costo para ti'
+                 : 'A gift from Stem Cells Colombia and our partners — free of charge for you'
+      });
+      _cDia.rows.sort((a,b)=>((a._start||a.time)||'').localeCompare((b._start||b.time)||''));
+    }
+  }catch(e){}
+
   // Firma de los datos de origen: si cambia, es que el paciente/tratamientos cambiaron.
   _draft._srcSig = _schedSig(_draft);
 
@@ -8950,7 +8983,15 @@ async function generateSchedulePDF(mode) {
     const rows = day.rows.map(r=>{
       const tz = r.tz ? '<div style="font-size:8px;color:#A0A39E;font-weight:500;margin-top:1px">'+r.tz+'</div>' : '';
       let body;
-      if(r.note){
+      if(r.cortesia){
+        /* Fila de CORTESÍA — dorada, con badge, para que se sienta el regalo */
+        body = '<div style="background:linear-gradient(90deg,#FFF6DF,#FDFBF3);border:1px solid #EFC75E;border-left:4px solid #D9A62E;border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:10px">'
+          + '<div style="font-size:17px">🎁</div>'
+          + '<div style="flex:1"><div style="font-weight:800;color:#7A5A12;font-size:13.5px">'+r.name+'</div>'
+          + (r.desc ? '<div style="color:#9A7B2E;font-size:11px;margin-top:1px">'+r.desc+'</div>' : '')
+          + '</div>'
+          + '<div style="font-size:9px;font-weight:800;letter-spacing:1.5px;color:#B98A2F;border:1px solid #EFC75E;border-radius:20px;padding:3px 10px;background:#FFFDF6">'+(schedLang==='es'?'CORTESÍA':'COURTESY')+'</div></div>';
+      } else if(r.note){
         body = '<div style="display:flex;gap:10px"><div style="flex:1"><div style="font-weight:700;color:#1E3A6E;font-size:14px">'+r.name+'</div>'+(r.desc?'<div style="color:#5F5E5A;font-size:12px;line-height:1.5">'+r.desc+'</div>':'')+'</div>'+
           '<div style="width:160px;flex-shrink:0;background:#FEF3E2;border-left:3px solid #E8913A;border-radius:0 4px 4px 0;padding:7px 10px"><div style="font-size:10px;font-weight:800;letter-spacing:.5px;color:#92400E;text-transform:uppercase;margin-bottom:4px">⚠ '+T.important+'</div><div style="font-size:12px;color:#7C4A12;line-height:1.45">'+schedExtra('noteText')+'</div></div></div>';
       } else {
