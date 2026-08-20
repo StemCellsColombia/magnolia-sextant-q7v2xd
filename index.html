@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.27 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.28 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -2603,6 +2603,7 @@ function buildChecklist() {
 
 function tC(el) {
   el.classList.toggle('done');
+  if(typeof autoSaveDraft==='function') autoSaveDraft();   // la marca queda en el paciente, no solo en el DOM
   const box=el.querySelector('.cbox');
   const badge=el.querySelector('.cb');
   if(el.classList.contains('done')) { box.textContent='✓'; if(!badge.classList.contains('cba')){badge.className='cb cbd';badge.textContent='Listo ✓';} }
@@ -2913,6 +2914,23 @@ function collectPatientData() {
   document.querySelectorAll('[id^="sw-"]').forEach(el => { data.toggles[el.id] = el.classList.contains('on'); });
   // Banderas de descripción editada a mano (para no pisar el texto del usuario al recargar)
   data.descEdited = Object.assign({}, _descEdited);
+  /* Checklist POR PACIENTE (19-ago-2026). Antes las marcas vivian solo en el
+     DOM: al cambiar de paciente en la bandeja se perdian, y el unico registro
+     confiable quedaba en el Maestro — por eso el equipo "dependia del Sheet".
+     La llave es el TEXTO del item (igual que el prevDone de buildChecklist).
+     null = el checklist no se ha construido en esta sesion (nunca entro a la
+     etapa 4): en ese caso pacGuardarActual conserva lo que ya habia guardado
+     en vez de pisarlo con vacio. */
+  const _cis = document.querySelectorAll('#dynamicChecklist .ci');
+  if(_cis.length){
+    data.checklist = {
+      done: Array.from(_cis).filter(ci=>ci.classList.contains('done'))
+                 .map(ci=>{ const t=ci.querySelector('.ct'); return t?t.textContent:''; }).filter(Boolean),
+      total: _cis.length
+    };
+  } else {
+    data.checklist = null;
+  }
   // v8.21 — lo que antes se perdía al recargar:
   // Schedule completo (días, filas, textos, bonus y la bandera de "editado a mano")
   try{ data.schedData = (typeof schedData!=='undefined' && schedData) ? JSON.parse(JSON.stringify(schedData)) : null; }catch(e){ data.schedData = null; }
@@ -2991,6 +3009,18 @@ function applyPatientData(data) {
   if(typeof upRx==='function') upRx();
   if(typeof updateApptTab==='function') updateApptTab();
   if(typeof buildChecklist==='function') buildChecklist();
+  // Restaurar las marcas del checklist de ESTE paciente (por texto del item)
+  if(data.checklist && Array.isArray(data.checklist.done)){
+    const marcados = new Set(data.checklist.done);
+    document.querySelectorAll('#dynamicChecklist .ci').forEach(ci=>{
+      const t = ci.querySelector('.ct'); if(!t || !marcados.has(t.textContent)) return;
+      ci.classList.add('done');
+      const box = ci.querySelector('.cbox'); if(box) box.textContent='✓';
+      const badge = ci.querySelector('.cb');
+      if(badge && !badge.classList.contains('cba')){ badge.className='cb cbd'; badge.textContent='Listo ✓'; }
+    });
+    if(typeof upP==='function') upP();
+  }
   if(typeof validateDates==='function') validateDates();
   if(typeof syncJdetoxPanel==='function') syncJdetoxPanel();
   if(typeof syncBdetoxPanel==='function') syncBdetoxPanel();
@@ -3060,6 +3090,11 @@ function newPatient(skipConfirm) {
   if(typeof upAuto==='function') upAuto();
   if(typeof upWarn==='function') upWarn();
   if(typeof updateApptTab==='function') updateApptTab();
+  /* ⚠ Vaciar el checklist ANTES de reconstruirlo: buildChecklist() preserva
+     las marcas por texto leyendo el DOM (prevDone), asi que sin esta limpieza
+     un paciente NUEVO heredaba las marcas del anterior — con la bandeja eso
+     era contaminacion entre pacientes (19-ago-2026). */
+  const _dc = document.getElementById('dynamicChecklist'); if(_dc) _dc.innerHTML='';
   if(typeof buildChecklist==='function') buildChecklist();
   if(typeof syncJdetoxPanel==='function') syncJdetoxPanel();
   if(typeof syncBdetoxPanel==='function') syncBdetoxPanel();
@@ -9354,6 +9389,9 @@ function pacGuardarActual(silencioso){
     if(guardado && guardado !== nombre){ id = ''; }
   }
   if(!id || !todos[id]){ id = pacNuevoId(); pacSetActivo(id); }
+  if(data.checklist === null && todos[id] && todos[id].data && todos[id].data.checklist){
+    data.checklist = todos[id].data.checklist;   // conservar marcas: el checklist no se construyo en esta sesion
+  }
   todos[id] = { data: data, archivado: (todos[id] && todos[id].archivado) || false };
   if(!pacGuardarTodos(todos)) return false;
   if(!silencioso) alert('Guardado: ' + nombre);
@@ -9439,12 +9477,16 @@ function _pacFila(id, reg, arch, activo){
   const chip = falta.length
     ? '<span style="background:#F7EDDD;color:#96550A;border-radius:3px;padding:3px 7px;font-size:11.5px;font-weight:600">Falta: ' + falta.slice(0,3).join(' · ') + (falta.length>3 ? ' +'+(falta.length-3) : '') + '</span>'
     : '<span style="background:#E3F0E9;color:#1B6E48;border-radius:3px;padding:3px 7px;font-size:11.5px;font-weight:600">Completo</span>';
+  const ck = reg.data && reg.data.checklist;
+  const chipCk = (ck && ck.total)
+    ? '<span style="background:' + (ck.done.length>=ck.total ? '#E3F0E9;color:#1B6E48' : '#E7ECF6;color:#2A4B8D') + ';border-radius:3px;padding:3px 7px;font-size:11.5px;font-weight:600">☑ ' + ck.done.length + '/' + ck.total + '</span>'
+    : '';
   return '<div onclick="pacAbrir(&quot;'+id+'&quot;)" style="cursor:pointer;border:1px solid '+(esActivo?'#2A4B8D':'#DCE0E8')+';background:'+(esActivo?'#F2F6FD':'#fff')+';border-radius:8px;padding:12px 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">'
     + '<div style="flex:1;min-width:190px">'
       + '<div style="font-weight:700;font-size:15px;color:#111823">' + (m.scc ? '#'+m.scc+' · ' : '') + m.nombre + (esActivo ? ' <span style="font-size:11px;color:#2A4B8D;font-weight:600">— abierto</span>' : '') + '</div>'
       + '<div style="font-size:12.5px;color:#7C8798;margin-top:2px">' + (m.inicio ? ('Tratamiento: '+m.inicio) : 'sin fecha de tratamiento') + ' · ' + m.trats + ' tratamiento(s)</div>'
     + '</div>'
-    + '<div>' + chip + '</div>'
+    + '<div style="display:flex;gap:6px;flex-wrap:wrap">' + chipCk + chip + '</div>'
     + '<div style="display:flex;gap:4px">'
       + '<button onclick="pacArchivar(&quot;'+id+'&quot;,event)" title="'+(arch?'Devolver a la bandeja':'Archivar')+'" style="border:1px solid #DCE0E8;background:#fff;border-radius:6px;padding:5px 9px;cursor:pointer;font-size:13px">'+(arch?'↩':'📥')+'</button>'
       + '<button onclick="pacBorrar(&quot;'+id+'&quot;,event)" title="Borrar" style="border:1px solid #DCE0E8;background:#fff;border-radius:6px;padding:5px 9px;cursor:pointer;font-size:13px">🗑</button>'
