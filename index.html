@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.36 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.37 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -2816,12 +2816,20 @@ const CONSULT_CONDITIONS_EN =
    Alejo por interno. Se pega una vez por navegador y queda guardado.
    ⚠ NUNCA volver a escribir un correo o un teléfono real aquí abajo. */
 const CONTACTOS_STORE = "scc_contactos_v1";
+/* v8.37 (decisión explícita de Alejo, 20-ago-2026): los contactos van DE
+   FÁBRICA en el archivo — "eso no es nada privado, monta eso en público".
+   Se le advirtió que el repo es público y lo reafirmó con un "dale": son
+   correos de trabajo de aliados, no datos de pacientes. El panel de
+   Contactos queda para SOBREESCRIBIR un correo sin tocar código. */
 const CONTACTOS_VACIO = {
-  doctors:  { luisa:'', escobar:'', correa:'', carvajal:'', martinez:'', montoya:'', capilo:'', essenza:'', toro:'' },
+  doctors:  { luisa:'luisa.mejia.A@gmail.com', escobar:'ceo.medeportiva@gmail.com',
+              correa:'juancamilocorreacardona@gmail.com', carvajal:'',
+              martinez:'drandresmartinezp@gmail.com', montoya:'', capilo:'',
+              essenza:'marcetabares81@gmail.com', toro:'javieretoro@gmail.com' },
   reminder: { luisa:'', escobar:'', correa:'', toro:'' },
-  hotel:    { loma:'', accor:'' },
-  chofer:   { jaime:'' },
-  dolor:    { email:'', tel:'' }
+  hotel:    { loma:'reservasloma@oxohotel.com', accor:'Sara.CARDONA@accor.com, juan.abaunza@accor.com' },
+  chofer:   { jaime:'jamaespinosa1707@gmail.com' },
+  dolor:    { email:'sudoctoradeldolor@gmail.com', tel:'+57 315 831 6361' }
 };
 function contactosCargar(){
   try{
@@ -2829,7 +2837,14 @@ function contactosCargar(){
     if(!raw) return JSON.parse(JSON.stringify(CONTACTOS_VACIO));
     const o = JSON.parse(raw);
     const base = JSON.parse(JSON.stringify(CONTACTOS_VACIO));
-    Object.keys(base).forEach(k=>{ if(o[k]) Object.assign(base[k], o[k]); });
+    Object.keys(base).forEach(k=>{
+      if(!o[k]) return;
+      Object.keys(base[k]).forEach(kk=>{
+        // solo pisa el default si lo guardado trae algo — un '' guardado
+        // (de una versión vieja del panel) no debe borrar un correo de fábrica
+        if(o[k][kk]) base[k][kk] = o[k][kk];
+      });
+    });
     return base;
   }catch(e){ return JSON.parse(JSON.stringify(CONTACTOS_VACIO)); }
 }
