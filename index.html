@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.32 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.33 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -643,7 +643,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--gl);color:var(--dk);min-h
           <option value="exo">CO2 + 26B exosomas ($2,399)</option>
           <option value="combo">Combo Hair + CO2 Facial ($4,500)</option>
         </select></div>
-        <div class="fld"><label>Doctor</label><select class="di" id="co2Doc"><option>Dra. Marcela Tabares (Essenza)</option><option>Dra. Stefany Cardona (Capilo)</option></select></div>
+        <div class="fld"><label>Doctor / lugar</label><select class="di" id="co2Doc"><option>Dra. Marcela Tabares (Essenza)</option><option>Dra. Stefany Cardona (Capilo)</option><option>En quirófano — Dra. Marcela Tabares (Essenza) sube, misma sesión</option></select></div>
         <div class="fld"><label>Fecha limpieza + luz roja (día 1)</label><input type="date" id="co2PrepDate" class="di"></div>
         <div class="fld"><label>Hora limpieza</label><input type="time" id="co2PrepTime" value="14:00" class="di"></div>
         <div class="fld"><label>Fecha del láser (día 2)</label><input type="date" id="procDate_co2" class="di" onchange="co2AutoPrep()"></div>
@@ -7434,7 +7434,7 @@ function buildInnocellRows() {
   if(treats.has('co2') && (val('procDate_co2')||tstart)) {
     const info = co2TipoInfo();
     const cDoc = val('co2Doc')||'';
-    const addr = cDoc.includes('Capilo') ? CAPILO_ADDR : ESSENZA_ADDR;
+    const addr = (cDoc.includes('quirófano')||cDoc.includes('Quirófano')) ? 'Incodol Sede Balsos (quirófano)' : (cDoc.includes('Capilo') ? CAPILO_ADDR : ESSENZA_ADDR);
     rows.push([name, docNum, 'CO2 Laser ('+((document.getElementById('co2Tipo')||{}).value||'celulas')+')', info.sc, info.exo,
       fmtDateShort(val('procDate_co2')||tstart), calcInnocellTime(val('procTime_co2')||'10:00'), addr, cDoc || 'Essenza']);
   }
@@ -7786,8 +7786,9 @@ function buildEvents() {
   if(treats.has('co2')) {
     const info = co2TipoInfo();
     const cDoc = val('co2Doc')||'Dra. Marcela Tabares (Essenza)';
-    const cClin = cDoc.includes('Capilo') ? 'Capilo' : 'Essenza';
-    const cLoc = cClin==='Capilo' ? 'Capilo - El Tesoro, Medical Tower 2, Floor 16, Office 1663' : 'Essenza';
+    const enQuirofano = cDoc.includes('quirófano') || cDoc.includes('Quirófano');
+    const cClin = enQuirofano ? 'Incodol' : (cDoc.includes('Capilo') ? 'Capilo' : 'Essenza');
+    const cLoc = enQuirofano ? 'Incodol Sede Balsos' : (cClin==='Capilo' ? 'Capilo - El Tesoro, Medical Tower 2, Floor 16, Office 1663' : 'Essenza');
     if(val('co2PrepDate')) events.push({
       title:`${name} - ${cClin} - Limpieza facial + Luz roja (pre-CO2)`,
       date:val('co2PrepDate'), time:val('co2PrepTime')||'14:00', duration:60,
@@ -7796,7 +7797,7 @@ function buildEvents() {
       color:patientColor
     });
     if(val('procDate_co2')) events.push({
-      title:`${name} - ${cClin} - CO2 LASER`,
+      title:`${name} - ${cClin} - CO2 LASER${enQuirofano?' (EN QUIROFANO, MISMA SESION)':''}`,
       date:val('procDate_co2'), time:val('procTime_co2')||'10:00', duration:durOf('dur_co2',90),
       location:cLoc,
       description:`${info.desc}${on('sw-co2sed')?'\n\nCON SEDACION LIGERA (US$200)':'\nSIN SEDACION'}\n\nDOCTOR: ${cDoc.toUpperCase()}`,
@@ -8643,14 +8644,21 @@ function buildScheduleDraft(opts) {
     if(v('co2PrepDate')){
       ensureDay(v('co2PrepDate')).rows.push({ time:timeRange(v('co2PrepTime')||'14:00',60),
         noProc:true, name: ES?'Limpieza facial y luz roja':'Facial cleansing & red light therapy',
-        desc: ES?'Preparación de la piel para el láser (día 1)':'Skin preparation for the laser (day 1)',
+        desc: (function(){
+          const tipo=(document.getElementById('co2Tipo')||{}).value||'celulas';
+          const conPRP = tipo!=='exo';
+          return (ES?'Preparación de la piel para el láser (día 1)':'Skin preparation for the laser (day 1)')
+               + (conPRP ? (ES?' · Extracción de sangre para PRP':' · Blood extraction for PRP') : '');
+        })(),
         note:false, _start:v('co2PrepTime')||'14:00' });
     }
     if(v('procDate_co2')){
       const info = co2TipoInfo();
       ensureDay(v('procDate_co2')).rows.push({ time:timeRange(v('procTime_co2')||'10:00', sd('dur_co2',90)),
         noProc:true, name: ES?'Láser CO2 Facial':'CO2 Laser Facial',
-        desc: (ES?info.es:info.en) + (ES?' · Por doctora estética':' · By aesthetic doctor'),
+        desc: (ES?info.es:info.en) + ((v('co2Doc')||'').toLowerCase().includes('quirófano')
+          ? (ES?' · En quirófano, en la misma sesión de tu procedimiento':' · In the operating room, during the same session as your procedure')
+          : (ES?' · Por doctora estética':' · By aesthetic doctor')),
         note:false, _start:v('procTime_co2')||'10:00' });
     }
   }
