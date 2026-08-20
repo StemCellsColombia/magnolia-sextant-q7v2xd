@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.38 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.39 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -9709,14 +9709,13 @@ function pacGuardarActual(silencioso){
   const data = collectPatientData();
   const todos = pacTodos();
   let id = pacActivoId();
-  /* ⚠ No pisar a otro paciente. Si el activo apunta a alguien con OTRO
-     nombre, lo que hay en pantalla es un paciente distinto (pasa al migrar
-     desde la version vieja, o si alguien escribe encima sin abrir la
-     bandeja): se guarda como nuevo en vez de sobrescribir al que estaba. */
-  if(id && todos[id]){
-    const guardado = ((todos[id].data && todos[id].data.fields && todos[id].data.fields.fullName) || '').trim();
-    if(guardado && guardado !== nombre){ id = ''; }
-  }
+  /* ⚠ v8.39: AQUI VIVIA LA TRIPLICACION. Habia un guard que comparaba el
+     NOMBRE del registro activo contra el del formulario y creaba un registro
+     nuevo si diferian — pero el autosave corre cada 1.5s, asi que ESCRIBIR
+     el nombre letra a letra creaba un clon por pausa ("Julian" -> registro,
+     "Julian Betancur" -> otro). El id activo es el dueno del formulario:
+     renombrar actualiza el MISMO paciente. Punto. */
+  if(typeof _pacAplicando !== 'undefined' && _pacAplicando) return false;  // jamas guardar a mitad de una restauracion
   if(!id || !todos[id]){ id = pacNuevoId(); pacSetActivo(id); }
   if(data.checklist === null && todos[id] && todos[id].data && todos[id].data.checklist){
     data.checklist = todos[id].data.checklist;   // conservar marcas: el checklist no se construyo en esta sesion
@@ -9728,13 +9727,15 @@ function pacGuardarActual(silencioso){
   return true;
 }
 
+let _pacAplicando = false;
 function pacAbrir(id){
   const todos = pacTodos();
   const reg = todos[id];
   if(!reg) return;
   pacGuardarActual(true);
   pacSetActivo(id);
-  applyPatientData(reg.data);
+  _pacAplicando = true;
+  try{ applyPatientData(reg.data); } finally { _pacAplicando = false; }
   cerrarBandeja();
   pintarBotonBandeja();
 }
@@ -9878,9 +9879,59 @@ function montarBotonBandeja(){
   pintarBotonBandeja();
 }
 
+/* v8.39: fusiona los clones que dejo el bug de la triplicacion. Agrupa por
+   nombre normalizado y conserva SIEMPRE la copia mas completa; solo borra
+   una copia si es CLARAMENTE parcial (menos campos llenos Y menos de 70% del
+   tamano de la mejor). Dos copias comparables se conservan ambas — preferimos
+   un duplicado visible a borrar datos de un paciente real. */
+function pacSanearClones(){
+  try{
+    const todos = pacTodos();
+    const porNombre = {};
+    Object.keys(todos).forEach(function(id){
+      const f = (todos[id].data && todos[id].data.fields) || {};
+      const nom = (f.fullName || '').trim().toLowerCase().replace(/\s+/g,' ');
+      if(!nom) return;
+      (porNombre[nom] = porNombre[nom] || []).push(id);
+    });
+    const llenos = function(id){
+      const f = (todos[id].data && todos[id].data.fields) || {};
+      return Object.keys(f).filter(function(k){ return String(f[k]||'').trim() !== '' && f[k] !== false; }).length;
+    };
+    const peso = function(id){ try{ return JSON.stringify(todos[id].data).length; }catch(e){ return 0; } };
+    let borrados = 0;
+    Object.keys(porNombre).forEach(function(nom){
+      const ids = porNombre[nom];
+      if(ids.length < 2) return;
+      ids.sort(function(a,b){ return (llenos(b)-llenos(a)) || (peso(b)-peso(a)); });
+      const mejor = ids[0], pesoMejor = peso(mejor), llenosMejor = llenos(mejor);
+      ids.slice(1).forEach(function(id){
+        if(llenos(id) <= llenosMejor && peso(id) < pesoMejor*0.7){
+          if(pacActivoId() === id) pacSetActivo(mejor);
+          delete todos[id]; borrados++;
+        }
+      });
+    });
+    if(borrados){ pacGuardarTodos(todos); console.warn('[SCC] bandeja: ' + borrados + ' clon(es) parciales fusionados'); }
+  }catch(e){ console.warn('sanear:', e.message); }
+}
+
 (function arrancaBandeja(){
   const go = function(){
-    try{ pacMigrarDraftViejo(); montarBotonBandeja(); }
+    try{
+      pacMigrarDraftViejo();
+      pacSanearClones();
+      montarBotonBandeja();
+      /* v8.39: al abrir la app, el paciente ACTIVO vuelve solo al formulario.
+         Antes quedaba en blanco ("me volvi a meter y estaba todo vacio") —
+         los datos estaban en la bandeja pero nadie los reponia. */
+      const _act = pacActivoId();
+      const _todos = pacTodos();
+      if(_act && _todos[_act] && _todos[_act].data){
+        _pacAplicando = true;
+        try{ applyPatientData(_todos[_act].data); } finally { _pacAplicando = false; }
+      }
+    }
     catch(e){ console.warn('bandeja:', e.message); }
   };
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
