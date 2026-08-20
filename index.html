@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.29 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.30 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -3266,9 +3266,9 @@ function refreshSheetPreviews() {
   `;
 
   let innocellRows = '';
-  if(treats.has('back')) innocellRows += `Back/Columna: ${document.getElementById('backCells').value||'?'}M células / ${document.getElementById('backExo').value||'?'}ml exosomas<br>`;
-  if(treats.has('joint')) innocellRows += `Joint (${joints}): ${document.getElementById('jointCells').value||'?'}M células / ${document.getElementById('jointExo').value||'?'}ml exosomas<br>`;
-  if(treats.has('iv')) innocellRows += `IV Full Body: ${document.getElementById('ivCells').value||'?'}M células / ${document.getElementById('ivExo').value||'?'}ml exosomas<br>`;
+  if(treats.has('back')) innocellRows += `Back/Columna: ${document.getElementById('backCells').value||'?'}M células${exoMl(document.getElementById('backExo').value)?(' / '+exoMl(document.getElementById('backExo').value)+'ml exosomas'):''}<br>`;
+  if(treats.has('joint')) innocellRows += `Joint (${joints}): ${document.getElementById('jointCells').value||'?'}M células${exoMl(document.getElementById('jointExo').value)?(' / '+exoMl(document.getElementById('jointExo').value)+'ml exosomas'):''}<br>`;
+  if(treats.has('iv')) innocellRows += `IV Full Body: ${document.getElementById('ivCells').value||'?'}M células${exoMl(document.getElementById('ivExo').value)?(' / '+exoMl(document.getElementById('ivExo').value)+'ml exosomas'):''}<br>`;
   if(treats.has('face')) innocellRows += `Face: ${document.getElementById('faceCells').value||'?'}M células<br>`;
   if(treats.has('hair')) innocellRows += `Hair: ${document.getElementById('hairCells').value||'?'}M células<br>`;
   if(treats.has('pshot')) innocellRows += `P-Shot: ${document.getElementById('pshotCells').value||'?'}M células<br>`;
@@ -7046,11 +7046,11 @@ function suggestedDesc(key){
   const val = id => { const el=document.getElementById(id); return el?el.value:''; };
   const onx = id => { const el=document.getElementById(id); return el && el.classList.contains('on'); };
   if(key==='back'){
-    const cells=val('backCells')||'?', exo=val('backExo')||'?';
+    const cells=val('backCells')||'?', exo=exoMl(val('backExo'));  // sin dato -> sin linea de exosomas
     const doc=val('backDoc')||'Dra. Diana Reyes';
     const sed=onx('sw-sed');
     const notes=(val('backN')||'').trim();
-    let t = `TRATAMIENTO DE ESPALDA\n\n${cells} MILLONES DE CELULAS MADRE\n${exo}ML DE EXOSOMAS\n`;
+    let t = `TRATAMIENTO DE ESPALDA\n\n${cells} MILLONES DE CELULAS MADRE\n`+(exo?`${exo}ML DE EXOSOMAS\n`:``);
     t += sed
       ? `EN QUIROFANO, CON SEDACION Y FLUOROSCOPIO, POR ANESTESIOLOGO EXPERTO EN APLICACION DE CELULAS MADRE`
       : `EN QUIROFANO, CON ANESTESIA LOCAL Y FLUOROSCOPIO.`;
@@ -7059,12 +7059,12 @@ function suggestedDesc(key){
     return t;
   }
   if(key==='joint'){
-    const cells=val('jointCells')||'?', exo=val('jointExo')||'?';
+    const cells=val('jointCells')||'?', exo=exoMl(val('jointExo'));
     const doc=val('jointDoc')||'Dra. Diana Reyes';
     const jsed=onx('sw-jsed');
     const joints = Array.from(document.querySelectorAll('.jchip.on')).map(c=>c.textContent).join(', ')||'POR CONFIRMAR';
     const notes=(val('jointN')||'').trim();
-    let t = `TRATAMIENTO ARTICULAR\n\n${cells} MILLONES DE CELULAS MADRE\n${exo}ML DE EXOSOMAS\n`;
+    let t = `TRATAMIENTO ARTICULAR\n\n${cells} MILLONES DE CELULAS MADRE\n`+(exo?`${exo}ML DE EXOSOMAS\n`:``);
     t += jsed ? `EN QUIROFANO, CON SEDACION Y ECOGRAFO.` : `EN QUIROFANO, CON ANESTESIA LOCAL Y ECOGRAFO.`;
     t += `\n\nARTICULACIONES: ${joints}`;
     if(notes) t += `\n\nNOTAS: ${notes}`;
@@ -7135,19 +7135,19 @@ function buildIncodolRows() {
     const d1=val('iv1Date'), t1=val('iv1Time')||'10:00';
     const d2=val('iv2Date'), t2=val('iv2Time')||'10:00';
     const d3=val('iv3Date'), t3=val('iv3Time')||'10:00';
-    const ivCells=val('ivCells')||'?', ivExo=val('ivExo')||'?', ivExo3=val('ivExo3')||'?';
+    const ivCells=val('ivCells')||'?', ivExo=exoMl(val('ivExo')), ivExo3=exoMl(val('ivExo3'));
     const ivExo1=val('ivExo1')||'', ivExoType1=val('ivExoType1')||'IV';
     const ivType2=val('ivExoType2')||'NEBULIZADOS';
     const day1Sala = (ivDetoxOn() ? 'Sueroterapia (Blood detox IV)' : 'Premedicación') +
       (exoMl(ivExo1) ? ` + ${exoMl(ivExo1)}ml exosomas ${ivExoType1}` : '');
     if(d1 && day1On()) rows.push([fmtDate(d1), name, fmtTime(t1), '', day1Sala, 'DIA 1 //ENOXAPARINA', 'Enfermeros', ...tail]);
-    if(d2) rows.push([fmtDate(d2), name, fmtTime(t2), '', `TRATAMIENTO CUERPO COMPLETO\nIV ${ivCells} millones de células , ${ivExo}ml de exosomas IV.`, 'DIA 2 / ENOXAPARINA +PARACETAMOL+DIFENHIDRAMINA', 'Enfermeros', ...tail]);
-    if(d3) rows.push([fmtDate(d3), name, fmtTime(t3), '', `${ivExo3}ML Exosomas IV`, 'DIA 3 //ENOXAPARINA', 'Enfermeros', ...tail]);
+    if(d2) rows.push([fmtDate(d2), name, fmtTime(t2), '', `TRATAMIENTO CUERPO COMPLETO\nIV ${ivCells} millones de células${ivExo?` , ${ivExo}ml de exosomas IV`:``}.`, 'DIA 2 / ENOXAPARINA +PARACETAMOL+DIFENHIDRAMINA', 'Enfermeros', ...tail]);
+    if(d3) rows.push([fmtDate(d3), name, fmtTime(t3), '', `${ivExo3?ivExo3+'ML ':''}Exosomas IV`, 'DIA 3 //ENOXAPARINA', 'Enfermeros', ...tail]);
   }
 
   // Back
   if(treats.has('back') && (val('procDate_back')||tstart)) {
-    const backCells=val('backCells')||'?', backExo=val('backExo')||'?';
+    const backCells=val('backCells')||'?', backExo=exoMl(val('backExo'));
     const backDoc=val('backDoc')||'Dra. Diana Reyes';
     const backDate=val('procDate_back')||tstart;
     const sed=on('sw-sed');
@@ -7162,7 +7162,7 @@ function buildIncodolRows() {
 
   // Joint
   if(treats.has('joint') && (val('procDate_joint')||tstart)) {
-    const jointCells=val('jointCells')||'?', jointExo=val('jointExo')||'?';
+    const jointCells=val('jointCells')||'?', jointExo=exoMl(val('jointExo'));
     const jointDoc=val('jointDoc')||'Dra. Diana Reyes';
     const jointDate=val('procDate_joint')||tstart;
     const joints = Array.from(document.querySelectorAll('.jchip.on')).map(c=>c.textContent).join(', ') || 'Por confirmar';
@@ -7662,8 +7662,8 @@ function buildEvents() {
     const d3=val('iv3Date'), t3=val('iv3Time')||'10:00';
     const ivCells=val('ivCells')||'?';
     const ivExo1=val('ivExo1')||'', ivExoType1=val('ivExoType1')||'IV';
-    const ivExo2=val('ivExo')||'?';
-    const ivExo3=val('ivExo3')||'?';
+    const ivExo2=exoMl(val('ivExo'));
+    const ivExo3=exoMl(val('ivExo3'));
     const ivType2=val('ivExoType2')||'NEBULIZADOS';
     const day1ExoDesc = exoMl(ivExo1) ? `\n${exoMl(ivExo1)}ML EXOSOMAS ${ivExoType1}` : '';
 
@@ -7678,29 +7678,29 @@ function buildEvents() {
       title:`${name} - Incodol - Sueroterapia`,
       date:d2, time:t2, duration:180,  // 3 hours when cells present
       location:'Incodol Sede Balsos',
-      description:`TRATAMIENTO DE CUERPO COMPLETO IV\n\n${ivCells} MILLONES DE CELULAS MADRE\n${ivExo2}ML EXOSOMAS ${ivType2}\n\nPREMEDICACION DIA 2 // ENOXAPARINA + DIFENHIDRAMINA + PARACETAMOL`,
+      description:`TRATAMIENTO DE CUERPO COMPLETO IV\n\n${ivCells} MILLONES DE CELULAS MADRE${ivExo2?`\n${ivExo2}ML EXOSOMAS ${ivType2}`:``}\n\nPREMEDICACION DIA 2 // ENOXAPARINA + DIFENHIDRAMINA + PARACETAMOL`,
       color:patientColor
     });
     if(d3) events.push({
       title:`${name} - Incodol - Sueroterapia`,
       date:d3, time:t3, duration:60,
       location:'Incodol Sede Balsos',
-      description:`TRATAMIENTO DE CUERPO COMPLETO\n\n${ivExo3}ML EXOSOMAS IV\n\nPREMEDICACION DIA 3 // ENOXAPARINA`,
+      description:`TRATAMIENTO DE CUERPO COMPLETO\n\n${ivExo3?ivExo3+'ML ':''}EXOSOMAS IV\n\nPREMEDICACION DIA 3 // ENOXAPARINA`,
       color:patientColor
     });
   }
 
   // BACK / COLUMNA - doctor selectable, sedation optional
   if(treats.has('back') && (val('procDate_back')||tstart)) {
-    const backCells=val('backCells')||'?', backExo=val('backExo')||'?';
+    const backCells=val('backCells')||'?', backExo=exoMl(val('backExo'));
     const backDoc=val('backDoc')||'Dra. Diana Reyes';
     const backTime=val('procTime_back')||'08:00';
     const backDate=val('procDate_back')||tstart;
     const sed=on('sw-sed');
     const docEmail = backDoc.includes('Toro') ? contacto('doctors','toro') : contacto('dolor','email');
     const desc = procDesc('back', sed
-      ? `TRATAMIENTO DE ESPALDA\n\n${backCells} MILLONES DE CELULAS MADRE\n${backExo}ML DE EXOSOMAS\nEN QUIROFANO, CON SEDACION Y FLUOROSCOPIO, POR ANESTESIOLOGO EXPERTO EN APLICACION DE CELULAS MADRE\n\nDOCTOR: ${backDoc.toUpperCase()}`
-      : `TRATAMIENTO DE ESPALDA\n\n${backCells} MILLONES DE CELULAS MADRE\n${backExo}ML DE EXOSOMAS\nEN QUIROFANO, CON ANESTESIA LOCAL Y FLUOROSCOPIO.\n\nDOCTOR: ${backDoc.toUpperCase()}`);
+      ? `TRATAMIENTO DE ESPALDA\n\n${backCells} MILLONES DE CELULAS MADRE${backExo?`\n${backExo}ML DE EXOSOMAS`:``}\nEN QUIROFANO, CON SEDACION Y FLUOROSCOPIO, POR ANESTESIOLOGO EXPERTO EN APLICACION DE CELULAS MADRE\n\nDOCTOR: ${backDoc.toUpperCase()}`
+      : `TRATAMIENTO DE ESPALDA\n\n${backCells} MILLONES DE CELULAS MADRE${backExo?`\n${backExo}ML DE EXOSOMAS`:``}\nEN QUIROFANO, CON ANESTESIA LOCAL Y FLUOROSCOPIO.\n\nDOCTOR: ${backDoc.toUpperCase()}`);
     events.push({
       title:`${name} - Incodol - QUIROFANO`,
       date:backDate, time:backTime, duration:durOf('dur_back',100),
@@ -7736,7 +7736,7 @@ function buildEvents() {
 
   // JOINT / ARTICULAR - doctor selectable, sedation optional
   if(treats.has('joint') && (val('procDate_joint')||tstart)) {
-    const jointCells=val('jointCells')||'?', jointExo=val('jointExo')||'?';
+    const jointCells=val('jointCells')||'?', jointExo=exoMl(val('jointExo'));
     const jointDoc=val('jointDoc')||'Dra. Diana Reyes';
     const jointTime=val('procTime_joint')||'08:00';
     const jointDate=val('procDate_joint')||tstart;
@@ -7744,8 +7744,8 @@ function buildEvents() {
     const jsed=on('sw-jsed');
     const docEmail = jointDoc.includes('Toro') ? contacto('doctors','toro') : contacto('dolor','email');
     const desc = procDesc('joint', jsed
-      ? `TRATAMIENTO ARTICULAR\n\n${jointCells} MILLONES DE CELULAS MADRE\n${jointExo}ML DE EXOSOMAS\nEN QUIROFANO, CON SEDACION Y ECOGRAFO.\n\nARTICULACIONES: ${joints}\n\nDOCTOR: ${jointDoc.toUpperCase()}`
-      : `TRATAMIENTO ARTICULAR\n\n${jointCells} MILLONES DE CELULAS MADRE\n${jointExo}ML DE EXOSOMAS\nEN QUIROFANO, CON ANESTESIA LOCAL Y ECOGRAFO.\n\nARTICULACIONES: ${joints}\n\nDOCTOR: ${jointDoc.toUpperCase()}`);
+      ? `TRATAMIENTO ARTICULAR\n\n${jointCells} MILLONES DE CELULAS MADRE${jointExo?`\n${jointExo}ML DE EXOSOMAS`:``}\nEN QUIROFANO, CON SEDACION Y ECOGRAFO.\n\nARTICULACIONES: ${joints}\n\nDOCTOR: ${jointDoc.toUpperCase()}`
+      : `TRATAMIENTO ARTICULAR\n\n${jointCells} MILLONES DE CELULAS MADRE${jointExo?`\n${jointExo}ML DE EXOSOMAS`:``}\nEN QUIROFANO, CON ANESTESIA LOCAL Y ECOGRAFO.\n\nARTICULACIONES: ${joints}\n\nDOCTOR: ${jointDoc.toUpperCase()}`);
     events.push({
       title:`${name} - Incodol - QUIROFANO`,
       date:jointDate, time:jointTime, duration:durOf('dur_joint',100),
@@ -8974,12 +8974,35 @@ async function generateSchedulePDF(mode) {
   const nat = natForLang((document.getElementById('nationality')||{}).value || '', schedLang==='es');
   const T = SCHED_T[schedLang];
 
+  /* ── Rediseño del PDF (Alejo, 20-ago-2026): "mucho texto pegado, no se
+     distingue lo importante, los días se ven iguales". Tres cambios:
+     1) La descripción deja de ser una línea pegada con "·": se parte en
+        CHIPS — los millones de células en píldora azul, los exosomas en
+        píldora verde, el resto en texto normal. Las dosis por parte saltan
+        a la vista (Knee, Hip, Face: cada fila con sus píldoras).
+     2) Cada día lleva su número grande (D1, D2…) como marca de agua en la
+        banda — los días dejan de verse iguales.
+     3) Más aire entre días y entre filas. */
+  const _chipsDesc = function(desc){
+    if(!desc) return '';
+    const out = String(desc).split(' · ').map(function(sg){
+      const t = sg.trim(); if(!t) return '';
+      if(/exosom/i.test(t))
+        return '<span style="background:#E1F5EE;color:#085041;font-weight:800;font-size:11px;padding:2px 9px;border-radius:11px;white-space:nowrap">'+t+'</span>';
+      if(/c[eé]lula|cell/i.test(t))
+        return '<span style="background:#E8EEF9;color:#0A1F4D;font-weight:800;font-size:11px;padding:2px 9px;border-radius:11px;white-space:nowrap">'+t+'</span>';
+      return '<span style="color:#5F5E5A;font-size:11.5px">'+t+'</span>';
+    }).filter(Boolean).join('');
+    return out ? '<div style="display:flex;flex-wrap:wrap;gap:4px 7px;margin-top:5px;align-items:center;line-height:1.5">'+out+'</div>' : '';
+  };
   const daysHtml = schedData.days.map((day,di)=>{
     const isPrep = day.isPrep || di===0;
     const cls = isPrep ? 'background:#5DCAA5' : 'background:#1E3A6E';
     const pillCls = isPrep ? 'background:#04342C;color:#9FE1CB' : 'background:#0A1F4D;color:#85B7EB';
     const dateCol = isPrep ? '#04342C' : '#fff';
-    const loc = day.location ? '<div style="background:#E6F1FB;color:#0C447C;padding:5px 14px;font-size:11px;font-weight:500">● '+day.location+'</div>' : '';
+    const _dn = String(day.label||'').match(/\d+/);
+    const marca = _dn ? '<span style="margin-left:auto;font-size:23px;font-weight:900;letter-spacing:-1px;color:'+(isPrep?'rgba(4,52,44,.22)':'rgba(255,255,255,.30)')+'">D'+_dn[0]+'</span>' : '';
+    const loc = day.location ? '<div style="background:#E6F1FB;color:#0C447C;padding:5px 16px;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase">● '+day.location+'</div>' : '';
     const rows = day.rows.map(r=>{
       const tz = r.tz ? '<div style="font-size:8px;color:#A0A39E;font-weight:500;margin-top:1px">'+r.tz+'</div>' : '';
       let body;
@@ -8992,17 +9015,17 @@ async function generateSchedulePDF(mode) {
           + '</div>'
           + '<div style="font-size:9px;font-weight:800;letter-spacing:1.5px;color:#B98A2F;border:1px solid #EFC75E;border-radius:20px;padding:3px 10px;background:#FFFDF6">'+(schedLang==='es'?'CORTESÍA':'COURTESY')+'</div></div>';
       } else if(r.note){
-        body = '<div style="display:flex;gap:10px"><div style="flex:1"><div style="font-weight:700;color:#1E3A6E;font-size:14px">'+r.name+'</div>'+(r.desc?'<div style="color:#5F5E5A;font-size:12px;line-height:1.5">'+r.desc+'</div>':'')+'</div>'+
+        body = '<div style="display:flex;gap:10px"><div style="flex:1"><div style="font-weight:800;color:#1E3A6E;font-size:14px">'+r.name+'</div>'+_chipsDesc(r.desc)+'</div>'+
           '<div style="width:160px;flex-shrink:0;background:#FEF3E2;border-left:3px solid #E8913A;border-radius:0 4px 4px 0;padding:7px 10px"><div style="font-size:10px;font-weight:800;letter-spacing:.5px;color:#92400E;text-transform:uppercase;margin-bottom:4px">⚠ '+T.important+'</div><div style="font-size:12px;color:#7C4A12;line-height:1.45">'+schedExtra('noteText')+'</div></div></div>';
       } else {
-        const nmStyle = r.meet ? 'font-weight:600;color:#6B7280;font-style:italic' : 'font-weight:700;color:#1E3A6E';
-        body = '<div style="'+nmStyle+';font-size:14px">'+r.name+'</div>'+(r.desc?'<div style="color:#5F5E5A;font-size:12px;line-height:1.5">'+r.desc+'</div>':'');
+        const nmStyle = r.meet ? 'font-weight:600;color:#6B7280;font-style:italic' : 'font-weight:800;color:#1E3A6E';
+        body = '<div style="'+nmStyle+';font-size:14px">'+r.name+'</div>'+_chipsDesc(r.desc);
       }
-      return '<tr><td style="width:120px;color:#2B4F8C;font-weight:700;font-size:12.5px;border-right:0.5px solid #EEF4F7;vertical-align:top;padding:10px 14px;border-bottom:0.5px solid #EEF4F7">'+(r.time||'')+tz+'</td><td style="vertical-align:top;padding:10px 14px;border-bottom:0.5px solid #EEF4F7">'+body+'</td></tr>';
+      return '<tr><td style="width:118px;color:#2B4F8C;font-weight:800;font-size:13px;border-right:0.5px solid #EEF4F7;vertical-align:top;padding:12px 14px;border-bottom:0.5px solid #EEF4F7">'+(r.time||'')+tz+'</td><td style="vertical-align:top;padding:12px 14px;border-bottom:0.5px solid #EEF4F7">'+body+'</td></tr>';
     }).join('');
-    return '<div style="margin-bottom:13px;page-break-inside:avoid;break-inside:avoid"><div style="display:flex;align-items:center;gap:9px;padding:6px 14px;border-radius:6px 6px 0 0;'+cls+'">'+
-      '<span style="font-size:10.5px;font-weight:800;letter-spacing:1px;padding:3px 11px;border-radius:20px;'+pillCls+'">'+(day.label||'').toUpperCase()+'</span>'+
-      '<span style="font-size:14px;font-weight:700;color:'+dateCol+'">'+fmtSchedDate(day.date)+'</span></div>'+loc+
+    return '<div style="margin-bottom:19px;page-break-inside:avoid;break-inside:avoid"><div style="display:flex;align-items:center;gap:9px;padding:8px 16px;border-radius:6px 6px 0 0;'+cls+'">'+
+      '<span style="font-size:11px;font-weight:800;letter-spacing:1.2px;padding:4px 13px;border-radius:20px;'+pillCls+'">'+(day.label||'').toUpperCase()+'</span>'+
+      '<span style="font-size:15.5px;font-weight:800;color:'+dateCol+'">'+fmtSchedDate(day.date)+'</span>'+marca+'</div>'+loc+
       '<table style="width:100%;border-collapse:collapse;border:0.5px solid #E0E9F0;border-top:none">'+rows+'</table></div>';
   }).join('');
 
