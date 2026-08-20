@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.33 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.35 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -2820,6 +2820,7 @@ const CONTACTOS_VACIO = {
   doctors:  { luisa:'', escobar:'', correa:'', carvajal:'', martinez:'', montoya:'', capilo:'', essenza:'', toro:'' },
   reminder: { luisa:'', escobar:'', correa:'', toro:'' },
   hotel:    { loma:'', accor:'' },
+  chofer:   { jaime:'' },
   dolor:    { email:'', tel:'' }
 };
 function contactosCargar(){
@@ -7260,32 +7261,46 @@ function buildIncodolRows() {
     if(d3) rows.push([fmtDate(d3), name, fmtTime(t3), '', `${ivExo3?ivExo3+'ML ':''}Exosomas IV`, 'DIA 3 //ENOXAPARINA', 'Enfermeros', ...tail]);
   }
 
+  /* ═══ v8.34: UNA SOLA SESION (Alejo: "todo se hace a la misma hora").
+     Back + articulaciones el MISMO dia = una sola fila de quirofano en
+     Incodol, con todo el contenido de la sesion junto. ═══ */
+  const _ibD = treats.has('back') ? (val('procDate_back')||tstart) : null;
+  const _ijD = treats.has('joint') ? (val('procDate_joint')||tstart) : null;
+  const mismaSesionInc = !!(_ibD && _ijD && _ibD === _ijD);
+  if(mismaSesionInc){
+    const bC=val('backCells')||'?', bE=exoMl(val('backExo'));
+    const jC=val('jointCells')||'?', jE=exoMl(val('jointExo'));
+    const joints = Array.from(document.querySelectorAll('.jchip.on')).map(c=>c.textContent).join(', ') || 'Por confirmar';
+    const sed = on('sw-sed') || on('sw-jsed');
+    const exoTot = (bE?` + ${bE}ML EXO ESPALDA`:'') + (jE?` + ${jE}ML EXO ART`:'');
+    const bT=val('procTime_back')||'08:00', jT=val('procTime_joint')||'08:00';
+    const sala = `${joints.toUpperCase()} + ESPALDA — ${jC}M + ${bC}M CÉLULAS${exoTot} — ${sed?'SEDACIÓN':'ANESTESIA LOCAL'} — ECÓGRAFO + FLUOROSCOPIO — MISMA SESIÓN`;
+    rows.push([fmtDate(_ibD), name, fmtTime(bT<jT?bT:jT), '', sala, 'N/A', val('backDoc')||val('jointDoc')||'Dra. Diana Reyes', ...tail]);
+  }
   // Back
-  if(treats.has('back') && (val('procDate_back')||tstart)) {
+  if(!mismaSesionInc && treats.has('back') && (val('procDate_back')||tstart)) {
     const backCells=val('backCells')||'?', backExo=exoMl(val('backExo'));
     const backDoc=val('backDoc')||'Dra. Diana Reyes';
     const backDate=val('procDate_back')||tstart;
     const sed=on('sw-sed');
     const backExoTxt = exoMl(backExo) ? `${exoMl(backExo)}ML DE EXOSOMAS ` : '';
-    const salaAuto = sed
-      ? `TRATAMIENTO DE ESPALDA ${backCells} MILLONES DE CÉLULAS MADRE ${backExoTxt}EN QUIRÓFANO, CON SEDACIÓN Y FLUOROSCOPIO`
-      : `TRATAMIENTO DE ESPALDA ${backCells} MILLONES DE CÉLULAS MADRE ${backExoTxt}EN QUIRÓFANO, CON ANESTESIA LOCAL Y FLUOROSCOPIO`;
+    /* v8.34 (Alejo): telegrafico. Sin "TRATAMIENTO DE", sin doctor (columna aparte). */
+    const salaAuto = `ESPALDA — ${backCells}M CÉLULAS${backExoTxt?` + ${backExoTxt.trim()}`:''} — ${sed?'SEDACIÓN':'ANESTESIA LOCAL'} + FLUOROSCOPIO`;
     // Si el usuario editó la descripción, esa manda (aplanada a una línea para el sheet).
     const sala = procDesc('back', salaAuto).replace(/\s*\n+\s*/g,' ').trim();
     rows.push([fmtDate(backDate), name, fmtTime(val('procTime_back')||'08:00'), '', sala, 'N/A', backDoc, ...tail]);
   }
 
   // Joint
-  if(treats.has('joint') && (val('procDate_joint')||tstart)) {
+  if(!mismaSesionInc && treats.has('joint') && (val('procDate_joint')||tstart)) {
     const jointCells=val('jointCells')||'?', jointExo=exoMl(val('jointExo'));
     const jointDoc=val('jointDoc')||'Dra. Diana Reyes';
     const jointDate=val('procDate_joint')||tstart;
     const joints = Array.from(document.querySelectorAll('.jchip.on')).map(c=>c.textContent).join(', ') || 'Por confirmar';
     const jsed=on('sw-jsed');
     const jointExoTxt = exoMl(jointExo) ? `${exoMl(jointExo)}ML DE EXOSOMAS ` : '';
-    const salaAuto = jsed
-      ? `TRATAMIENTO ARTICULAR (${joints}) ${jointCells} MILLONES DE CÉLULAS MADRE ${jointExoTxt}EN QUIRÓFANO, CON SEDACIÓN Y ECOGRAFÍA`
-      : `TRATAMIENTO ARTICULAR (${joints}) ${jointCells} MILLONES DE CÉLULAS MADRE ${jointExoTxt}EN QUIRÓFANO, CON ANESTESIA LOCAL Y ECOGRAFÍA`;
+    /* v8.34 (Alejo): las articulaciones VAN PRIMERO y sin relleno. */
+    const salaAuto = `${joints.toUpperCase()} — ${jointCells}M CÉLULAS${jointExoTxt?` + ${jointExoTxt.trim()}`:''} — ${jsed?'SEDACIÓN':'ANESTESIA LOCAL'} + ECÓGRAFO`;
     const sala = procDesc('joint', salaAuto).replace(/\s*\n+\s*/g,' ').trim();
     rows.push([fmtDate(jointDate), name, fmtTime(val('procTime_joint')||'08:00'), '', sala, 'N/A', jointDoc, ...tail]);
   }
@@ -7296,7 +7311,7 @@ function buildIncodolRows() {
     const pshotExo=val('pshotExo');
     const pshotDate=val('procDate_pshot')||tstart;
     const exoLine = exoMl(pshotExo) ? ` ${exoMl(pshotExo)}ML DE EXOSOMAS` : '';
-    const pshotSalaAuto = `P-SHOT ${pshotCells} MILLONES DE CÉLULAS MADRE${exoLine} ANESTESIA LOCAL`;
+    const pshotSalaAuto = `P-SHOT — ${pshotCells}M CÉLULAS${exoLine} — ANESTESIA LOCAL`;
     const pshotSala = procDesc('pshot', pshotSalaAuto).replace(/\s*\n+\s*/g,' ').trim();
     rows.push([fmtDate(pshotDate), name, fmtTime(val('procTime_pshot')||'09:00'), '', pshotSala, 'N/A', val('pshotDoc')||'Dr. Alejandro Carvajal', ...tail]);
   }
@@ -7715,6 +7730,10 @@ function buildEvents() {
       date,time,duration:60,
       location:'Aeropuerto Jose Maria Cordova - Medellin',
       description:`TRANSFER AEROPUERTO - ${hotelSel}\n\nVUELO: ${flight}\n\nCHOFER: JAIME ESPINOSA`,
+      /* v8.35 (Alejo): Jaime se arroba SOLO — "a mi se me olvida agendarlo
+         manual". Su correo vive en Contactos privados (chofer.jaime). */
+      attendees: (contacto('chofer','jaime').indexOf('@')>0 ? [{email:contacto('chofer','jaime')}] : []),
+      notify:true,
       color:patientColor
     });
   }
@@ -7732,6 +7751,8 @@ function buildEvents() {
       date,time,duration:60,
       location:`${hotelSel} - Lobby`,
       description:`TRANSFER ${hotelSel} - AEROPUERTO\n\nVUELO: ${flight} (sale ${flightTime})\nPICKUP 3 HORAS ANTES: ${time}\n\nCHOFER: JAIME ESPINOSA`,
+      attendees: (contacto('chofer','jaime').indexOf('@')>0 ? [{email:contacto('chofer','jaime')}] : []),
+      notify:true,
       color:patientColor
     });
   }
@@ -7851,6 +7872,28 @@ function buildEvents() {
     });
   }
 
+  /* ═══ v8.34: back + articulaciones el mismo dia = UN SOLO evento de
+     quirofano (antes salian DOS a la misma hora — "mucho enredo"). Los
+     detox de cada uno se conservan aparte, esos si son otro dia. ═══ */
+  const _cbD = treats.has('back') ? (val('procDate_back')||tstart) : null;
+  const _cjD = treats.has('joint') ? (val('procDate_joint')||tstart) : null;
+  const mismaSesionOR = !!(_cbD && _cjD && _cbD === _cjD);
+  if(mismaSesionOR){
+    const bC=val('backCells')||'?', bE=exoMl(val('backExo'));
+    const jC=val('jointCells')||'?', jE=exoMl(val('jointExo'));
+    const joints = Array.from(document.querySelectorAll('.jchip.on')).map(c=>c.textContent).join(', ')||'POR CONFIRMAR';
+    const sed = on('sw-sed') || on('sw-jsed');
+    const bT=val('procTime_back')||'08:00', jT=val('procTime_joint')||'08:00';
+    const doc = val('backDoc')||val('jointDoc')||'Dra. Diana Reyes';
+    const docEmail = doc.includes('Toro') ? contacto('doctors','toro') : contacto('dolor','email');
+    events.push({
+      title:`${name} - Incodol - QUIROFANO`,
+      date:_cbD, time:(bT<jT?bT:jT), duration:durOf('dur_back',100)+durOf('dur_joint',100),
+      location:'Incodol Sede Balsos',
+      description:`ESPALDA — ${bC}M CELULAS${bE?` + ${bE}ML EXO`:''}\n${joints.toUpperCase()} — ${jC}M CELULAS${jE?` + ${jE}ML EXO`:''}\n\n${sed?'SEDACION':'ANESTESIA LOCAL'} — FLUOROSCOPIO + ECOGRAFO\nTODO EN LA MISMA SESION`,
+      attendees:[{email:docEmail}], notify:true, color:patientColor
+    });
+  }
   // BACK / COLUMNA - doctor selectable, sedation optional
   if(treats.has('back') && (val('procDate_back')||tstart)) {
     const backCells=val('backCells')||'?', backExo=exoMl(val('backExo'));
@@ -7862,7 +7905,7 @@ function buildEvents() {
     const desc = procDesc('back', sed
       ? `TRATAMIENTO DE ESPALDA\n\n${backCells} MILLONES DE CELULAS MADRE${backExo?`\n${backExo}ML DE EXOSOMAS`:``}\nEN QUIROFANO, CON SEDACION Y FLUOROSCOPIO, POR ANESTESIOLOGO EXPERTO EN APLICACION DE CELULAS MADRE\n\nDOCTOR: ${backDoc.toUpperCase()}`
       : `TRATAMIENTO DE ESPALDA\n\n${backCells} MILLONES DE CELULAS MADRE${backExo?`\n${backExo}ML DE EXOSOMAS`:``}\nEN QUIROFANO, CON ANESTESIA LOCAL Y FLUOROSCOPIO.\n\nDOCTOR: ${backDoc.toUpperCase()}`);
-    events.push({
+    if(!mismaSesionOR) events.push({
       title:`${name} - Incodol - QUIROFANO`,
       date:backDate, time:backTime, duration:durOf('dur_back',100),
       location:'Incodol Sede Balsos',
@@ -7907,7 +7950,7 @@ function buildEvents() {
     const desc = procDesc('joint', jsed
       ? `TRATAMIENTO ARTICULAR\n\n${jointCells} MILLONES DE CELULAS MADRE${jointExo?`\n${jointExo}ML DE EXOSOMAS`:``}\nEN QUIROFANO, CON SEDACION Y ECOGRAFO.\n\nARTICULACIONES: ${joints}\n\nDOCTOR: ${jointDoc.toUpperCase()}`
       : `TRATAMIENTO ARTICULAR\n\n${jointCells} MILLONES DE CELULAS MADRE${jointExo?`\n${jointExo}ML DE EXOSOMAS`:``}\nEN QUIROFANO, CON ANESTESIA LOCAL Y ECOGRAFO.\n\nARTICULACIONES: ${joints}\n\nDOCTOR: ${jointDoc.toUpperCase()}`);
-    events.push({
+    if(!mismaSesionOR) events.push({
       title:`${name} - Incodol - QUIROFANO`,
       date:jointDate, time:jointTime, duration:durOf('dur_joint',100),
       location:'Incodol Sede Balsos',
@@ -8157,8 +8200,10 @@ function buildEvents() {
           color:patientColor
         });
       }
-      // El evento en sí. Si es Examen/Imagen (MRI), se arroba al deportólogo (Escobar) y al cirujano (Toro).
-      const examDocs = (e.kind === 'exam') ? [{email:REMINDER_EMAILS.escobar},{email:REMINDER_EMAILS.toro}] : [];
+      /* v8.35 (Alejo): los examenes YA NO arroban a nadie — Escobar y Toro
+         recibian invitaciones de Calendar por cada MRI y nadie pidio eso.
+         Los recordatorios +24h/+30h quedan como eventos INTERNOS. */
+      const examDocs = [];
       events.push({
         title:`${name} - ${e.label || kindLabel}`,
         date:e.date, time:e.time, duration:dur,
@@ -8189,12 +8234,11 @@ function buildEvents() {
         const _r30Str = `${_r30.getFullYear()}-${String(_r30.getMonth()+1).padStart(2,'0')}-${String(_r30.getDate()).padStart(2,'0')}`;
         const _r30Time = `${String(_r30.getHours()).padStart(2,'0')}:${String(_r30.getMinutes()).padStart(2,'0')}`;
         events.push({
-          title:`⚠️ Lectura ${e.label || 'examen/imagen'} de ${name} (deportólogo + cirujano)`,
+          title:`⚠️ Lectura ${e.label || 'examen/imagen'} de ${name} — confirmar con doctores`,
           date:_r30Str, time:_r30Time, duration:30,
           location:'',
-          description:`Revisar la lectura del ${e.label || 'examen/imagen'} de ${name}.\n\nDeportólogo y cirujano notificados (a esta hora ya debería estar lista la lectura).`,
-          color:patientColor,
-          attendees:[{email:REMINDER_EMAILS.escobar},{email:REMINDER_EMAILS.toro}]
+          description:`Revisar la lectura del ${e.label || 'examen/imagen'} de ${name}.\n\nRECORDATORIO INTERNO — a esta hora ya deberia estar la lectura; confirmar con los doctores por WhatsApp.`,
+          color:patientColor
         });
       }
       // Transfer de regreso si está marcado
