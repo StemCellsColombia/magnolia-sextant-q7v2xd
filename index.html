@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.37 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.38 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -2326,7 +2326,10 @@ function tT(el,k) {
 }
 
 function upDetails() {
-  ['iv','back','joint','face','hair','pshot','hip','mrkr'].forEach(k => {
+  // ⚠ v8.38: 'co2' y 'exo' FALTABAN aqui — las tarjetas nuevas se marcaban
+  // pero su panel jamas se abria ("no deja poner ni fecha"). Esta lista debe
+  // crecer con CADA tarjeta nueva que se agregue.
+  ['iv','back','joint','face','hair','pshot','hip','mrkr','co2','exo'].forEach(k => {
     const d = document.getElementById('d-'+k);
     if(d) d.classList.toggle('vis', treats.has(k));
   });
