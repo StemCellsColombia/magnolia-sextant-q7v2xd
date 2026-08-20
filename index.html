@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.31 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.32 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -448,6 +448,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--gl);color:var(--dk);min-h
         <div class="tc" onclick="tT(this,'hair')"><div class="ti">💇</div><div class="tn">Hair / Capilar</div><div class="tck"></div></div>
         <div class="tc" onclick="tT(this,'pshot')"><div class="ti">⚡</div><div class="tn">P-Shot</div><div class="tck"></div></div>
         <div class="tc" onclick="tT(this,'hip')"><div class="ti">🫁</div><div class="tn">Hiperbárica</div><div class="tck"></div></div>
+        <div class="tc" onclick="tT(this,'co2')"><div class="ti">🔦</div><div class="tn">CO2 Láser</div><div class="tck"></div></div>
+        <div class="tc" onclick="tT(this,'exo')"><div class="ti">🧬</div><div class="tn">Exosomas (solo)</div><div class="tck"></div></div>
         <div class="tc" onclick="tT(this,'mrkr')"><div class="ti">🔬</div><div class="tn">Cancer Markers</div><div class="tck"></div></div>
       </div>
       <div class="arow" id="autoRow" style="display:none"></div>
@@ -567,6 +569,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--gl);color:var(--dk);min-h
         <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Tobillo Izq.</span>
         <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Pie Der.</span>
         <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Pie Izq.</span>
+        <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Codo Der.</span>
+        <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Codo Izq.</span>
+        <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Mano Der.</span>
+        <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Mano Izq.</span>
+        <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Pulgar</span>
+        <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Sacroilíacas (ambas)</span>
+        <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Tendón</span>
+        <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Ligamento</span>
+        <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Músculo</span>
+        <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Fascia plantar Der.</span>
+        <span class="jchip" onclick="this.classList.toggle('on');refreshProcDescs()">Fascia plantar Izq.</span>
       </div>
       <div class="fld" style="margin-top:9px"><label>Notas adicionales (Incodol)</label><textarea id="jointN" oninput="refreshProcDescs()"></textarea></div>
       <div class="fld" style="margin-top:9px"><label>Descripción del procedimiento (editable — va a Calendar y Sheet)</label><textarea id="desc_joint" rows="5" oninput="markDescEdited('joint')" placeholder="Se llena solo; puedes cambiar todo."></textarea><div style="font-size:11px;color:var(--gr);margin-top:3px">Se sugiere sola según los datos. Si la editas, se respeta tu texto. <span onclick="resetDesc('joint')" style="color:var(--db);cursor:pointer;text-decoration:underline">Restaurar sugerencia</span></div></div>
@@ -620,6 +633,44 @@ body{font-family:'DM Sans',sans-serif;background:var(--gl);color:var(--dk);min-h
       <div class="fld" style="max-width:180px;margin-bottom:10px"><label>Número de sesiones</label><input class="di" type="number" placeholder="2" min="1" max="6" id="hipSessions" onchange="buildHipSessions()"></div>
       <div id="hipSessionsContainer"></div>
       <div class="ainfo" style="margin-top:9px">CRET - El Tesoro, Medical Tower 2, Floor 4, Office 4798 · Cada sesión dura 1 hora</div>
+    </div>
+
+    <!-- v8.32: protocolos que existian en el quotation pero no aqui (Alejo, 20-ago-2026) -->
+    <div class="tdet" id="d-co2"><div class="tdtitle">CO2 Láser</div>
+      <div class="g2">
+        <div class="fld"><label>Tipo (según quotation)</label><select class="di" id="co2Tipo" onchange="refreshProcDescs()">
+          <option value="celulas">CO2 + Facial células y PRP ($2,999)</option>
+          <option value="exo">CO2 + 26B exosomas ($2,399)</option>
+          <option value="combo">Combo Hair + CO2 Facial ($4,500)</option>
+        </select></div>
+        <div class="fld"><label>Doctor</label><select class="di" id="co2Doc"><option>Dra. Marcela Tabares (Essenza)</option><option>Dra. Stefany Cardona (Capilo)</option></select></div>
+        <div class="fld"><label>Fecha limpieza + luz roja (día 1)</label><input type="date" id="co2PrepDate" class="di"></div>
+        <div class="fld"><label>Hora limpieza</label><input type="time" id="co2PrepTime" value="14:00" class="di"></div>
+        <div class="fld"><label>Fecha del láser (día 2)</label><input type="date" id="procDate_co2" class="di" onchange="co2AutoPrep()"></div>
+        <div class="fld"><label>Hora del láser</label><input type="time" id="procTime_co2" value="10:00" class="di"></div>
+        <div class="fld"><label>Duración (min)</label><input type="number" id="dur_co2" value="90" min="5" step="5" class="di"></div>
+      </div>
+      <div class="trow" style="margin-top:9px" onclick="tSw('co2sed')"><div class="tsw" id="sw-co2sed"></div><div class="tlbl">¿Sedación ligera? (US$200 — se cobra aparte)</div></div>
+      <div class="ainfo" style="margin-top:9px">Día 1: limpieza facial y luz roja · Día 2: láser CO2. Sin Vitamin C (regla de Mia, 20-ago-2026). Incluye medicamento en spray para 6 meses.</div>
+    </div>
+
+    <div class="tdet" id="d-exo"><div class="tdtitle">Exosomas (solo — sin células)</div>
+      <div class="g2">
+        <div class="fld"><label>Tipo (según quotation)</label><select class="di" id="exoTipo" onchange="refreshProcDescs()">
+          <option value="face26">Facial — 26 billones ($500)</option>
+          <option value="hair26">Capilar — 26 billones ($400)</option>
+          <option value="hf52">Face + Hair — 52 billones ($650)</option>
+          <option value="iv52">IV — 52 billones ($500)</option>
+          <option value="iv104">IV — 104 billones ($650)</option>
+          <option value="ivhf104">IV 52B + Face + Hair — 104 billones ($1,000)</option>
+        </select></div>
+        <div class="fld"><label>Lugar</label><select class="di" id="exoPlace"><option>La Loma — habitación del paciente</option><option>Essenza</option><option>Capilo - El Tesoro</option><option>Incodol Sede Balsos</option></select></div>
+        <div class="fld"><label>Fecha</label><input type="date" id="procDate_exo" class="di"></div>
+        <div class="fld"><label>Hora</label><input type="time" id="procTime_exo" value="10:00" class="di"></div>
+        <div class="fld"><label>Duración (min)</label><input type="number" id="dur_exo" value="60" min="5" step="5" class="di"></div>
+        <div class="fld"><label>Aplica</label><input type="text" id="exoDoc" placeholder="Equipo médico SCC / enfermera" class="di"></div>
+      </div>
+      <div class="ainfo" style="margin-top:9px">1 solo día. Sin Vitamin C, sin preparación, sin hotel ni transfers (hoja EXOSOMES). Rápido y sin downtime.</div>
     </div>
 
     <div class="tdet" id="d-mrkr"><div class="tdtitle">Cancer Markers</div>
@@ -2456,6 +2507,41 @@ function countPrpToggles(){
   return n;
 }
 
+/* ══ v8.32: CO2 LASER y EXOSOMAS SOLOS (Alejo, 20-ago-2026) ═════════════════
+   Existian en el quotation (co2facial/co2exo/hairco2 y los 6 productos de
+   exosomas) pero aqui no habia como agendarlos: se agendaban como "Facial" y
+   salian con celulas madre que el paciente no compro. */
+function co2AutoPrep(){
+  // La limpieza+luz roja es el dia ANTERIOR al laser; se sugiere sola y es editable
+  const d = (document.getElementById('procDate_co2')||{}).value;
+  const prep = document.getElementById('co2PrepDate');
+  if(!d || !prep || prep.value) return;
+  const pp = d.split('-').map(Number);
+  if(pp.length===3 && pp.every(n=>!isNaN(n))){
+    const dt = new Date(pp[0], pp[1]-1, pp[2]); dt.setDate(dt.getDate()-1);
+    prep.value = dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+  }
+}
+function exoTipoInfo(){
+  const t = (document.getElementById('exoTipo')||{}).value || 'face26';
+  return ({
+    face26:{ es:'Exosomas Facial — 26 billones', en:'Exosomes Facial Treatment', b:'26B', zona:'rostro' },
+    hair26:{ es:'Exosomas Capilar — 26 billones', en:'Exosomes Hair Treatment', b:'26B', zona:'cuero cabelludo' },
+    hf52:{ es:'Exosomas Face + Hair — 52 billones', en:'Exosomes Face & Hair', b:'52B', zona:'rostro y cuero cabelludo' },
+    iv52:{ es:'Exosomas IV — 52 billones', en:'Exosomes IV (52 billion)', b:'52B', zona:'IV' },
+    iv104:{ es:'Exosomas IV — 104 billones', en:'Exosomes IV (104 billion)', b:'104B', zona:'IV' },
+    ivhf104:{ es:'Exosomas IV 52B + Face + Hair — 104 billones', en:'Exosomes IV + Face & Hair', b:'104B', zona:'IV, rostro y cuero cabelludo' }
+  })[t];
+}
+function co2TipoInfo(){
+  const t = (document.getElementById('co2Tipo')||{}).value || 'celulas';
+  return ({
+    celulas:{ desc:'LASER CO2 + 20 MILLONES DE CELULAS MADRE + PRP', sc:'20', exo:'', en:'CO2 laser + 20M stem cells + PRP', es:'Láser CO2 + 20M células madre + PRP' },
+    exo:{ desc:'LASER CO2 + 26 BILLONES DE EXOSOMAS', sc:'', exo:'26B', en:'CO2 laser + 26 billion exosomes', es:'Láser CO2 + 26 billones de exosomas' },
+    combo:{ desc:'LASER CO2 FACIAL + TRATAMIENTO CAPILAR (CELULAS + PRP)', sc:'20+30', exo:'', en:'CO2 laser facial + hair treatment', es:'Láser CO2 facial + tratamiento capilar' }
+  })[t];
+}
+
 function tSw(k) {
   document.getElementById('sw-'+k).classList.toggle('on');
   // If a PRP/Lisado toggle changed, refresh the VITAL card visibility
@@ -2578,7 +2664,7 @@ function buildChecklist() {
   const has = t => treats.has(t);
   const on = id => { const el=document.getElementById(id); return el && el.classList.contains('on'); };
   const anySurgery = has('back') || has('joint') || has('pshot');
-  const anyCapilo = has('face') || has('hair');
+  const anyCapilo = has('face') || has('hair') || has('co2') || has('exo');
   const anyVital = on('sw-bprp') || on('sw-jprp') || on('sw-pprp') || on('sw-hprp') || on('sw-faceprp');
 
   // Each section: title + array of {text, auto}
@@ -3152,6 +3238,7 @@ function getSuggestedDocs() {
   const s = [];
   if(treats.has('iv'))    s.push('luisa');     // IV/Full Body → Luisa (editable)
   if(treats.has('joint')) s.push('escobar');   // Joint → Escobar (o Correa)
+  if(treats.has('co2') || treats.has('exo')) s.push('essenza'); // estetica
   if(treats.has('back'))  s.push('escobar');   // Back → Escobar o Correa
   if(treats.has('pshot')) s.push('carvajal');  // P-Shot → Carvajal
   if(treats.has('face'))  s.push('capilo');    // Facial → Capilo o Essenza
@@ -3253,7 +3340,7 @@ async function createConsultFromList(id) {
 function updateApptTab() {
   const name = document.getElementById('fullName').value || '-';
   document.getElementById('apptPatientName').textContent = name;
-  const treatList = Array.from(treats).map(t => ({iv:'IV/Full Body',back:'Back/Columna',joint:'Joint',face:'Facial',hair:'Capilar',pshot:'P-Shot',hip:'Hiperbárica',mrkr:'Cancer Markers'}[t])).join(', ');
+  const treatList = Array.from(treats).map(t => ({iv:'IV/Full Body',back:'Back/Columna',joint:'Joint',face:'Facial',hair:'Capilar',pshot:'P-Shot',co2:'CO2 Láser',exo:'Exosomas',hip:'Hiperbárica',mrkr:'Cancer Markers'}[t])).join(', ');
   document.getElementById('apptTreats').textContent = treatList || 'No seleccionados';
   renderConsults();
 }
@@ -3778,7 +3865,7 @@ function gatherPatientForMaestro() {
   const nationality = get('nationality');
   const gender = get('gender');
 
-  const treatList = Array.from(treats).map(t => ({iv:'IV/Full Body',back:'Back',joint:'Joint',face:'Facial',hair:'Capilar',pshot:'P-Shot',hip:'Hiperbarica',mrkr:'Cancer Markers'}[t])).filter(Boolean).join(', ');
+  const treatList = Array.from(treats).map(t => ({iv:'IV/Full Body',back:'Back',joint:'Joint',face:'Facial',hair:'Capilar',pshot:'P-Shot',co2:'CO2 Laser',exo:'Exosomas',hip:'Hiperbarica',mrkr:'Cancer Markers'}[t])).filter(Boolean).join(', ');
 
   const hotelOn = document.getElementById('sw-hotel') && document.getElementById('sw-hotel').classList.contains('on');
   const hotel = hotelOn ? (document.getElementById('hotelName').value === 'loma' ? 'La Loma Marriott' : 'Novotel') : 'No incluido';
@@ -7344,6 +7431,18 @@ function buildInnocellRows() {
     if(d3) rows.push([name, docNum, 'IV', '', val('ivExo3')||val('ivExo'),
       fmtDateShort(d3), calcInnocellTime(val('iv3Time')||'09:00'), INCODOL_ADDR, getAuthorizer('iv')]);
   }
+  if(treats.has('co2') && (val('procDate_co2')||tstart)) {
+    const info = co2TipoInfo();
+    const cDoc = val('co2Doc')||'';
+    const addr = cDoc.includes('Capilo') ? CAPILO_ADDR : ESSENZA_ADDR;
+    rows.push([name, docNum, 'CO2 Laser ('+((document.getElementById('co2Tipo')||{}).value||'celulas')+')', info.sc, info.exo,
+      fmtDateShort(val('procDate_co2')||tstart), calcInnocellTime(val('procTime_co2')||'10:00'), addr, cDoc || 'Essenza']);
+  }
+  if(treats.has('exo') && (val('procDate_exo')||tstart)) {
+    const info = exoTipoInfo();
+    rows.push([name, docNum, info.en, '', info.b,
+      fmtDateShort(val('procDate_exo')||tstart), calcInnocellTime(val('procTime_exo')||'10:00'), val('exoPlace')||'La Loma', val('exoDoc')||'Equipo SCC']);
+  }
   if(treats.has('face') && (val('procDate_face')||tstart)) {
     const faceDoc=val('faceDoc')||'';
     const addr = faceDoc.includes('Essenza') ? ESSENZA_ADDR : CAPILO_ADDR;
@@ -7681,6 +7780,39 @@ function buildEvents() {
         addTransferPair(val('hip'+i+'Date'), val('hip'+i+'Time')||'14:00', 60, 'CRET (El Tesoro)');
       }
     }
+  }
+
+  // CO2 LASER (v8.32): dia 1 limpieza+luz roja, dia 2 laser — segun tipo
+  if(treats.has('co2')) {
+    const info = co2TipoInfo();
+    const cDoc = val('co2Doc')||'Dra. Marcela Tabares (Essenza)';
+    const cClin = cDoc.includes('Capilo') ? 'Capilo' : 'Essenza';
+    const cLoc = cClin==='Capilo' ? 'Capilo - El Tesoro, Medical Tower 2, Floor 16, Office 1663' : 'Essenza';
+    if(val('co2PrepDate')) events.push({
+      title:`${name} - ${cClin} - Limpieza facial + Luz roja (pre-CO2)`,
+      date:val('co2PrepDate'), time:val('co2PrepTime')||'14:00', duration:60,
+      location:cLoc,
+      description:`DIA 1 DEL CO2\n\nLIMPIEZA FACIAL Y LUZ ROJA\n\nDOCTOR: ${cDoc.toUpperCase()}`,
+      color:patientColor
+    });
+    if(val('procDate_co2')) events.push({
+      title:`${name} - ${cClin} - CO2 LASER`,
+      date:val('procDate_co2'), time:val('procTime_co2')||'10:00', duration:durOf('dur_co2',90),
+      location:cLoc,
+      description:`${info.desc}${on('sw-co2sed')?'\n\nCON SEDACION LIGERA (US$200)':'\nSIN SEDACION'}\n\nDOCTOR: ${cDoc.toUpperCase()}`,
+      color:patientColor
+    });
+  }
+  // EXOSOMAS SOLOS (v8.32): 1 dia, sin preparacion
+  if(treats.has('exo') && val('procDate_exo')) {
+    const info = exoTipoInfo();
+    events.push({
+      title:`${name} - Exosomas - ${info.b}`,
+      date:val('procDate_exo'), time:val('procTime_exo')||'10:00', duration:durOf('dur_exo',60),
+      location:val('exoPlace')||'La Loma — habitación del paciente',
+      description:`APLICACION DE EXOSOMAS (SIN CELULAS)\n\n${info.es.toUpperCase()}\nZONA: ${info.zona.toUpperCase()}\n\nAPLICA: ${(val('exoDoc')||'EQUIPO MEDICO SCC').toUpperCase()}`,
+      color:patientColor
+    });
   }
 
   // IV FULL BODY - 3 day protocol with independent dates/times
@@ -8506,6 +8638,30 @@ function buildScheduleDraft(opts) {
       name:'P-Shot',desc:(v('pshotCells')||'?')+(ES?'M células · Anestesia local, por urólogo':'M stem cells · Local anesthesia, by urologist'),note:false, _start:v('procTime_pshot')});
   }
   // Face
+  // CO2 LASER (v8.32)
+  if(typeof treats!=='undefined' && treats.has('co2')){
+    if(v('co2PrepDate')){
+      ensureDay(v('co2PrepDate')).rows.push({ time:timeRange(v('co2PrepTime')||'14:00',60),
+        noProc:true, name: ES?'Limpieza facial y luz roja':'Facial cleansing & red light therapy',
+        desc: ES?'Preparación de la piel para el láser (día 1)':'Skin preparation for the laser (day 1)',
+        note:false, _start:v('co2PrepTime')||'14:00' });
+    }
+    if(v('procDate_co2')){
+      const info = co2TipoInfo();
+      ensureDay(v('procDate_co2')).rows.push({ time:timeRange(v('procTime_co2')||'10:00', sd('dur_co2',90)),
+        noProc:true, name: ES?'Láser CO2 Facial':'CO2 Laser Facial',
+        desc: (ES?info.es:info.en) + (ES?' · Por doctora estética':' · By aesthetic doctor'),
+        note:false, _start:v('procTime_co2')||'10:00' });
+    }
+  }
+  // EXOSOMAS SOLOS (v8.32): 1 dia, rapido, sin downtime
+  if(typeof treats!=='undefined' && treats.has('exo') && v('procDate_exo')){
+    const info = exoTipoInfo();
+    ensureDay(v('procDate_exo')).rows.push({ time:timeRange(v('procTime_exo')||'10:00', sd('dur_exo',60)),
+      noProc:true, name: ES?info.es:info.en,
+      desc: ES?'Con el equipo médico SCC. Rápido, cómodo y sin downtime.':'With the SCC medical team. Quick, comfortable, no downtime.',
+      note:false, _start:v('procTime_exo')||'10:00' });
+  }
   if(typeof treats!=='undefined' && treats.has('face') && v('procDate_face')) {
     const faceDoc=v('faceDoc')||'';
     const isCapilo = faceDoc.includes('Capilo');
@@ -8580,7 +8736,7 @@ function buildScheduleDraft(opts) {
     // marca de preparación (un día puede tener toma de sangre 6am Y el tratamiento el mismo día).
     // Excluimos: transfers, consultas, marcadores, citas y la toma de sangre VITAL.
     const _NONPROC = /transfer|consult|marker|markers|cita|blood draw|extracci/i;
-    const hasIncodolProc = rows.some(r=>!_NONPROC.test(r.name));
+    const hasIncodolProc = rows.some(r=>!r.noProc && !_NONPROC.test(r.name));
     let label;
     if(dd.isPrep && !hasIncodolProc) {
       label = ES?'Día 0':'Day 0';   // v8.21h: en español decía "Day 0" (no se traducía)
@@ -8590,7 +8746,7 @@ function buildScheduleDraft(opts) {
     }
     // Meet with patient care: primer día de tratamiento = Office #3 (30 min antes); resto = solo lobby (10 min antes)
     if(hasIncodolProc) {
-      const firstProc = rows.find(r=>!_NONPROC.test(r.name));
+      const firstProc = rows.find(r=>!r.noProc && !_NONPROC.test(r.name));
       if(firstProc && (firstProc._start||firstProc.time)) {
         const isFirstTreatDay = (treatDayNum === 1);
         const meetMins = isFirstTreatDay ? 30 : 10;
@@ -9667,7 +9823,7 @@ function _on(id){ const e=document.getElementById(id); return !!(e && e.classLis
 function semaforoEstado(){
   const S = [];
   const nombre = _v('fullName'), doc = _v('docNum');
-  const clinicos = ['iv','back','joint','face','hair','pshot'].filter(k=>treats.has(k));
+  const clinicos = ['iv','back','joint','face','hair','pshot','co2','exo'].filter(k=>treats.has(k));
 
   // ── Incodol: paciente + datos clinicos. CERO datos de viaje. ──
   const incTreats = ['iv','back','joint','pshot'].filter(k=>treats.has(k));
@@ -9690,7 +9846,7 @@ function semaforoEstado(){
     if(!doc) falta.push('documento');
     clinicos.forEach(k=>{
       if(k==='iv'){ if(!_v('iv2Date') && !_v('tstart')) falta.push('fecha del IV'); }
-      else if(!_v('procDate_'+k)) falta.push('fecha de '+({back:'columna',joint:'articular',face:'facial',hair:'capilar',pshot:'P-Shot'})[k]);
+      else if(!_v('procDate_'+k)) falta.push('fecha de '+({back:'columna',joint:'articular',face:'facial',hair:'capilar',pshot:'P-Shot',co2:'CO2 laser',exo:'exosomas'})[k]);
     });
     S.push({salida:'Hoja Innocell', listo:!falta.length, falta, nota:'No necesita vuelo ni hotel'});
   }
