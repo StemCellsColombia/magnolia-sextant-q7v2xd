@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.35 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.36 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -7707,6 +7707,12 @@ function onConnected() {
 
 function buildEvents() {
   const name = document.getElementById('fullName').value || 'Paciente';
+  /* v8.36 (Alejo): la Dra. Marcela (Essenza) se arroba sola en sus
+     procedimientos. Su correo vive en Contactos privados (doctors.essenza). */
+  const _attEssenza = function(doc){
+    return (/(marcela|essenza)/i.test(String(doc||'')) && contacto('doctors','essenza').indexOf('@')>0)
+      ? [{email:contacto('doctors','essenza')}] : [];
+  };
   const tstart = document.getElementById('tstart').value;
   const events = [];
   const val = id => { const el=document.getElementById(id); return el?el.value:''; };
@@ -7815,6 +7821,7 @@ function buildEvents() {
       date:val('co2PrepDate'), time:val('co2PrepTime')||'14:00', duration:60,
       location:cLoc,
       description:`DIA 1 DEL CO2\n\nLIMPIEZA FACIAL Y LUZ ROJA\n\nDOCTOR: ${cDoc.toUpperCase()}`,
+      attendees:_attEssenza(cDoc), notify:true,
       color:patientColor
     });
     if(val('procDate_co2')) events.push({
@@ -7822,6 +7829,7 @@ function buildEvents() {
       date:val('procDate_co2'), time:val('procTime_co2')||'10:00', duration:durOf('dur_co2',90),
       location:cLoc,
       description:`${info.desc}${on('sw-co2sed')?'\n\nCON SEDACION LIGERA (US$200)':'\nSIN SEDACION'}\n\nDOCTOR: ${cDoc.toUpperCase()}`,
+      attendees:_attEssenza(cDoc), notify:true,
       color:patientColor
     });
   }
@@ -7833,6 +7841,7 @@ function buildEvents() {
       date:val('procDate_exo'), time:val('procTime_exo')||'10:00', duration:durOf('dur_exo',60),
       location:val('exoPlace')||'La Loma — habitación del paciente',
       description:`APLICACION DE EXOSOMAS (SIN CELULAS)\n\n${info.es.toUpperCase()}\nZONA: ${info.zona.toUpperCase()}\n\nAPLICA: ${(val('exoDoc')||'EQUIPO MEDICO SCC').toUpperCase()}`,
+      attendees:_attEssenza(val('exoDoc')), notify:true,
       color:patientColor
     });
   }
@@ -7999,6 +8008,7 @@ function buildEvents() {
       date:faceDate, time:faceTime, duration:durOf('dur_face',60),
       location:loc,
       description:procDesc('face', `TRATAMIENTO FACIAL\n\n${faceCells} MILLONES DE CELULAS MADRE${exoLine}\n\nVITAMIN C IV INCLUIDO\n\nDOCTOR: ${faceDoc.toUpperCase()}`),
+      attendees:_attEssenza(faceDoc), notify:true,
       color:patientColor
     });
   }
@@ -8015,6 +8025,7 @@ function buildEvents() {
     const exoLine = exoMl(hairExo) ? `, ${exoMl(hairExo)}ML DE EXOSOMAS` : '';
     events.push({
       title:`${name} - ${clinic} - Capilar`,
+      attendees:_attEssenza(hairDoc), notify:true,
       date:hairDate, time:hairTime, duration:durOf('dur_hair',60),
       location:loc,
       description:procDesc('hair', `TRATAMIENTO CAPILAR\n\n${hairCells} MILLONES DE CELULAS MADRE${exoLine}\n\nVITAMIN C IV INCLUIDO\n\nDOCTOR: ${hairDoc.toUpperCase()}`),
