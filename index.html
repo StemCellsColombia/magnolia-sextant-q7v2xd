@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCC Scheduling v8.30 — Stem Cells Colombia</title>
+<title>SCC Scheduling v8.31 — Stem Cells Colombia</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1147,7 +1147,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--gl);color:var(--dk);min-h
 <!-- ─────── FORM LINK CONFIG ─────── -->
 <div style="background:var(--of);border:1.5px solid var(--teal);border-radius:10px;padding:14px 18px;margin:18px 0 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
   <div style="font-size:13px;font-weight:700;color:var(--db);white-space:nowrap">🔗 Link del formulario virtual</div>
-  <input id="formLinkInput" type="url" value="https://forms.gle/TU_LINK_AQUI" style="flex:1;min-width:220px;padding:7px 11px;border:1.5px solid var(--bd);border-radius:7px;font-size:12px;font-family:inherit" oninput="updateAllPrompts()" placeholder="https://forms.gle/...">
+  <input id="formLinkInput" type="url" value="https://stem-cells-colombia.au4.cliniko.com/f/?gwvdW0L1jp2mYQHSJAbeZqHRXl9JtW5v5" style="flex:1;min-width:220px;padding:7px 11px;border:1.5px solid var(--bd);border-radius:7px;font-size:12px;font-family:inherit" oninput="updateAllPrompts()" placeholder="https://forms.gle/...">
   <div style="font-size:11px;color:var(--gr)">Este link se inserta automáticamente en todos los mensajes que lo necesiten.</div>
 </div>
 
@@ -1170,26 +1170,27 @@ body{font-family:'DM Sans',sans-serif;background:var(--gl);color:var(--dk);min-h
       <div class="prompt-tag" style="color:var(--teal)">⭐ Primer Contacto — English (TODO EN UNO)</div>
       <button class="copy-btn" onclick="copyPrompt(this,'p-first-en')">&#128203; Copiar</button>
     </div>
-    <div class="prompt-body" id="p-first-en">Hi [PATIENT NAME],
+    <div class="prompt-body" id="p-first-en">Hi [PATIENT NAME]!
 
-Welcome to Stem Cells Colombia — I’m genuinely glad you’re here.
+Welcome to Stem Cells Colombia — I’m genuinely glad to have you with us.
 
-My name is Alejandro, and I’ll be coordinating every detail of your visit personally. From the moment you arrive in Medellín to the moment you leave, you’re in good hands.
+My name is Alejandro, and I’ll be personally coordinating your visit and making sure everything is taken care of.
+{{#transfers}}
+✈️ *Flights:* Have you booked your flights yet? If so, please send me your arrival and departure dates, times, airlines, and flight numbers. This is very important for us to coordinate your transportation and your schedule.
+{{/transfers}}{{#soloHotel}}
+✈️ *Flights:* Once you have your flights, please send me your arrival and departure dates — I need them to book your hotel nights correctly.
+{{/soloHotel}}{{#hotel}}
+🏨 *Accommodation:* Your package includes [NOCHES HOTEL] nights at {{#loma}}La Loma Hotel, where your treatment will take place{{/loma}}{{#hotelOtro}}[NOMBRE HOTEL]{{/hotelOtro}}.
 
-A couple of things to get us started:
+Will you be traveling alone or with someone? And will you be staying any additional nights in Medellín before or after your treatment?
+{{/hotel}}
+📋 *Medical form:* Please complete this short form before your virtual consultation with our specialist:
 
-✈️  Have you booked your flights yet? If so, please share:
-· Arrival flight — date, time, airline & flight number
-· Departure flight — date, time, airline & flight number
-
-{{#loma}}🏨  Your treatment takes place at La Loma Hotel (Marriott Tribute Portfolio, 4 stars) — our operating room and your accommodation are in the same building, so everything is effortlessly close. Will you be staying at La Loma for your entire stay, or do you have plans elsewhere before or after?{{/loma}}{{#hotelOtro}}🏨  You'll be staying at [NOMBRE HOTEL]. Your treatment takes place at a private operating room a short ride away, and I'll coordinate everything around your hotel. Will you be there for your entire stay, or do you have plans elsewhere before or after?{{/hotelOtro}}{{^hotel}}🏨  Where will you be staying in Medellín? Let me know your hotel and I'll make sure everything is coordinated around it — including how you'll get to your appointments.{{/hotel}}
-
-📋  To schedule your virtual consultation with our specialist, please fill out this short form — it takes about 3 minutes:
 [FORM_LINK]
 
-Once I have your details, I’ll confirm your appointment and handle everything from there.
+{{#nada}}Once I have your completed form, I’ll take care of the next steps.{{/nada}}{{^nada}}Once I have your {{#transfers}}flight information and your {{/transfers}}completed form, I’ll take care of the next steps.{{/nada}}
 
-Looking forward to taking care of you.
+Looking forward to taking care of you!
 
 Alejandro Escobar
 Scheduling & Patient Experience
@@ -1203,24 +1204,25 @@ Stem Cells Colombia | Medellín, Colombia</div>
     </div>
     <div class="prompt-body" id="p-first-es">¡Hola [NOMBRE PACIENTE]!
 
-Bienvenido a Stem Cells Colombia — me alegra mucho que estés aquí.
+Bienvenido a Stem Cells Colombia — nos alegra mucho tenerte con nosotros.
 
-Mi nombre es Alejandro y me encargaré personalmente de coordinar cada detalle de tu visita. Desde que llegues a Medellín hasta que te vayas, estás en buenas manos.
+Mi nombre es Alejandro y voy a coordinar personalmente tu visita para que todo salga perfecto.
+{{#transfers}}
+✈️ *Vuelos:* ¿Ya compraste tus vuelos? Si es así, envíame por favor fechas, horas, aerolínea y número de vuelo de llegada y de regreso. Es muy importante para coordinar tu transporte y tu agenda.
+{{/transfers}}{{#soloHotel}}
+✈️ *Vuelos:* Cuando tengas tus vuelos, envíame por favor tus fechas de llegada y salida — las necesito para dejar bien reservadas tus noches de hotel.
+{{/soloHotel}}{{#hotel}}
+🏨 *Hospedaje:* Tu paquete incluye [NOCHES HOTEL] noches en {{#loma}}el Hotel La Loma, donde se realiza tu tratamiento{{/loma}}{{#hotelOtro}}[NOMBRE HOTEL]{{/hotelOtro}}.
 
-Para empezar, necesito un par de cosas:
+¿Viajas solo o acompañado? ¿Y te vas a quedar noches adicionales en Medellín antes o después del tratamiento?
+{{/hotel}}
+📋 *Formulario médico:* Por favor completa este formulario corto antes de tu consulta virtual con nuestro especialista:
 
-✈️  ¿Ya tienes los vuelos listos? Si es así, compárteme:
-· Vuelo de llegada — fecha, hora, aerolínea y número de vuelo
-· Vuelo de salida — fecha, hora, aerolínea y número de vuelo
-
-{{#loma}}🏨  Tu tratamiento se realiza en La Loma Hotel (Marriott Tribute Portfolio, 4 estrellas) — nuestro quirófano y tu alojamiento están en el mismo edificio, lo que hace todo muy cómodo. ¿Te quedas en La Loma durante toda tu estadía, o tienes planes en otro lugar antes o después?{{/loma}}{{#hotelOtro}}🏨  Te vas a hospedar en [NOMBRE HOTEL]. Tu tratamiento se realiza en un quirófano privado a pocos minutos, y coordino todo alrededor de tu hotel. ¿Te quedas ahí toda la estadía, o tienes planes en otro lugar antes o después?{{/hotelOtro}}{{^hotel}}🏨  ¿Dónde te vas a hospedar en Medellín? Cuéntame el hotel y coordino todo alrededor de eso — incluyendo cómo llegas a tus citas.{{/hotel}}
-
-📋  Para agendar tu cita virtual con nuestra especialista, llena este formulario corto — tarda unos 3 minutos:
 [FORM_LINK]
 
-En cuanto tenga tu información, confirmo tu cita y coordino todo lo demás.
+{{#nada}}Cuando tenga tu formulario completo, yo me encargo de los siguientes pasos.{{/nada}}{{^nada}}Cuando tenga {{#transfers}}la información de tus vuelos y {{/transfers}}tu formulario completo, yo me encargo de los siguientes pasos.{{/nada}}
 
-Quedo atento.
+¡Quedo pendiente para cuidarte!
 
 Alejandro Escobar
 Scheduling & Patient Experience
@@ -2028,6 +2030,20 @@ function gS(n) {
   upP();
 }
 
+/* ⚠ FUGA DE LLAVES (Alejo, 20-ago-2026): updatePatientPrompts() solo corria
+   desde syncN() — es decir, cuando alguien escribia el nombre del paciente.
+   Quien abria la app y entraba DERECHO a Prompts a copiar el primer mensaje
+   veia los {{#hotel}}/{{#loma}} crudos (9 prompts salian asi). Ahora el motor
+   corre tambien al cargar la pagina (tras pintarTel24, para que el telefono
+   24/7 ya este puesto cuando se cachean las plantillas). */
+(function arrancaPrompts(){
+  const go = function(){ setTimeout(function(){
+    try{ updatePatientPrompts(); }catch(e){ console.warn('prompts:', e.message); }
+  }, 250); };
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
+  else go();
+})();
+
 function syncN() {
   const n = document.getElementById('fullName').value || '-';
   document.getElementById('pname').textContent = n;
@@ -2059,7 +2075,13 @@ function _promptConds(){
     hotelOtro: hotel && !esLoma,
     transferIn: on('sw-arr-in'),
     transferOut: on('sw-arr-out'),
-    transfers: on('sw-arr-in') || on('sw-arr-out') || on('sw-clinic')
+    transfers: on('sw-arr-in') || on('sw-arr-out') || on('sw-clinic'),
+    /* v8.31: variantes que pidio Alejo. soloHotel = hay hotel pero no
+       transfers (los vuelos se piden solo para cuadrar la reserva). nada =
+       ni hotel ni transfers: "lo unico que nos interesa es que llenen el
+       form para la consulta, de resto ni vuelo ni hotel nos interesa". */
+    soloHotel: hotel && !(on('sw-arr-in') || on('sw-arr-out') || on('sw-clinic')),
+    nada: !hotel && !(on('sw-arr-in') || on('sw-arr-out') || on('sw-clinic'))
   };
 }
 // Resuelve los bloques {{#cond}} / {{^cond}} y limpia los saltos de línea que sobran.
@@ -2111,6 +2133,12 @@ function updatePatientPrompts() {
   if(g('email').trim()) repl['[CORREO]']=g('email').trim();
   const hotelOn = document.getElementById('sw-hotel') && document.getElementById('sw-hotel').classList.contains('on');
   if(hotelOn) repl['[NOMBRE HOTEL]'] = (g('hotelName')==='loma' ? 'La Loma Marriott Tribute' : 'Novotel Hotel - El Tesoro');
+  if(hotelOn && g('hotelNights').trim()) repl['[NOCHES HOTEL]'] = g('hotelNights').trim();
+  /* [FORM_LINK] tambien se resuelve aqui: antes solo lo hacia updateAllPrompts
+     (que corre al editar el input del link), asi que el primer contacto salia
+     con "[FORM_LINK]" literal hasta que alguien tocara ese campo. */
+  const _fl = g('formLinkInput').trim();
+  if(_fl) repl['[FORM_LINK]'] = _fl;
 
   if(!window._promptTpl){
     window._promptTpl = {};
@@ -3290,7 +3318,7 @@ function refreshSheetPreviews() {
 // COPY
 function copyEl(id) { navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>alert('✅ Copiado!')); }
 function updateAllPrompts() {
-  const link = (document.getElementById('formLinkInput') || {}).value || 'https://forms.gle/TU_LINK_AQUI';
+  const link = (document.getElementById('formLinkInput') || {}).value || 'https://stem-cells-colombia.au4.cliniko.com/f/?gwvdW0L1jp2mYQHSJAbeZqHRXl9JtW5v5';
   document.querySelectorAll('.prompt-body').forEach(el => {
     if (el.dataset.originalText === undefined) el.dataset.originalText = el.textContent;
     // replace [FORM_LINK] in the text content preserving other markup
