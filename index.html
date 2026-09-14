@@ -10258,32 +10258,45 @@ async function generateSchedulePDF(mode) {
         const nmStyle = r.meet ? 'font-weight:600;color:#6B7280;font-style:italic' : 'font-weight:800;color:#1E3A6E';
         body = '<div style="'+nmStyle+';font-size:14px">'+r.name+'</div>'+_chipsDesc(r.desc);
       }
-      return '<tr><td style="width:118px;color:#2B4F8C;font-weight:800;font-size:13px;border-right:0.5px solid #EEF4F7;vertical-align:top;padding:12px 14px;border-bottom:0.5px solid #EEF4F7">'+(r.time||'')+tz+'</td><td style="vertical-align:top;padding:12px 14px;border-bottom:0.5px solid #EEF4F7">'+body+'</td></tr>';
-    }).join('');
-    return '<div style="margin-bottom:19px;page-break-inside:avoid;break-inside:avoid"><div style="display:flex;align-items:center;gap:9px;padding:8px 16px;border-radius:6px 6px 0 0;'+cls+'">'+
+      return '<div style="display:flex;background:#fff;border-left:0.5px solid #E0E9F0;border-right:0.5px solid #E0E9F0;border-bottom:0.5px solid #E0E9F0">'+
+        '<div style="width:150px;flex-shrink:0;box-sizing:border-box;color:#2B4F8C;font-weight:800;font-size:13px;border-right:0.5px solid #EEF4F7;padding:12px 14px">'+(r.time||'')+tz+'</div>'+
+        '<div style="flex:1;min-width:0;padding:12px 14px">'+body+'</div></div>';
+    });
+    /* ⚠ SIN HUECOS (Alejo, 14-sep-2026: "ese huecote que tiene"). El día
+       entero llevaba page-break-inside:avoid: si no cabía al final de la
+       página, saltaba COMPLETO a la siguiente y dejaba media hoja en blanco.
+       Ahora cada fila es un bloque [data-blk] y la banda del día viaja pegada
+       a su primera fila (nunca queda un título huérfano al pie). Los cortes
+       los calcula generateSchedulePDF al medir, antes de html2pdf. */
+    const head = '<div style="display:flex;align-items:center;gap:9px;padding:8px 16px;border-radius:6px 6px 0 0;'+cls+'">'+
       '<span style="font-size:11px;font-weight:800;letter-spacing:1.2px;padding:4px 13px;border-radius:20px;'+pillCls+'">'+(day.label||'').toUpperCase()+'</span>'+
       '<span style="font-size:15.5px;font-weight:800;color:'+dateCol+'">'+fmtSchedDate(day.date)+'</span>'+marca+'</div>'+loc+
-      '<table style="width:100%;border-collapse:collapse;border:0.5px solid #E0E9F0;border-top:none">'+rows+'</table></div>';
+      '';
+    const rs = rows.length ? rows : [''];
+    return '<div style="margin-bottom:19px">'+
+      '<div data-blk="1">'+head+rs[0]+'</div>'+
+      rs.slice(1).map(function(x){ return '<div data-blk="1">'+x+'</div>'; }).join('')+
+      '</div>';
   }).join('');
 
   // Bonus / follow-ups
   let bonusHtml = '';
   if(typeof schedData.bonus !== 'undefined' && schedData.bonus && schedData.bonus.length){
     const items = schedData.bonus.map(b=>'• '+b).join('<br>');
-    bonusHtml = '<div style="background:#E8F9FC;border:0.5px solid #A8E8F0;border-radius:8px;padding:10px 16px;margin-top:12px;page-break-inside:avoid">'+
+    bonusHtml = '<div data-blk="1" style="background:#E8F9FC;border:0.5px solid #A8E8F0;border-radius:8px;padding:10px 16px;margin-top:12px;page-break-inside:avoid">'+
       '<div style="font-size:9.5px;letter-spacing:1.5px;color:#0F6E56;text-transform:uppercase;font-weight:800;margin-bottom:5px">✦ '+schedExtra('bonusTitle')+'</div>'+
       '<div style="font-size:12px;color:#185FA5;line-height:1.7">'+items+'</div></div>';
   }
 
   // Sección de dolor / emergencia — v8.5: editable y con toggle desde el editor
   const painHtml = (schedData.painOn===false) ? '' :
-    '<div style="background:#FDECEA;border:1px solid #F5B7B1;border-radius:8px;padding:10px 16px;margin-top:14px;page-break-inside:avoid">'+
+    '<div data-blk="1" style="background:#FDECEA;border:1px solid #F5B7B1;border-radius:8px;padding:10px 16px;margin-top:14px;page-break-inside:avoid">'+
     '<div style="font-size:11px;letter-spacing:1.5px;color:#A93226;text-transform:uppercase;font-weight:800;margin-bottom:5px">⚠ '+schedExtra('painTitle')+'</div>'+
     '<div style="font-size:12px;color:#922B21;line-height:1.6">'+schedExtra('painText')+'</div></div>';
 
   // Mensaje de cierre — v8.5: editable y con toggle desde el editor
   const closingHtml = (schedData.closingOn===false) ? '' :
-    '<div style="text-align:center;margin-top:18px;padding:16px;background:linear-gradient(90deg,#E8F9FC,#F0F9F5);border-radius:10px;page-break-inside:avoid">'+
+    '<div data-blk="1" style="text-align:center;margin-top:18px;padding:16px;background:linear-gradient(90deg,#E8F9FC,#F0F9F5);border-radius:10px;page-break-inside:avoid">'+
     '<div style="font-size:18px;font-weight:800;color:#1E3A6E;letter-spacing:0.3px">'+schedExtra('closingText')+'</div>'+
     '<div style="font-size:11px;color:#5DCAA5;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-top:3px">Stem Cells Colombia</div></div>';
 
@@ -10331,6 +10344,28 @@ async function generateSchedulePDF(mode) {
     const medidor = nodo.cloneNode(true);
     medidor.style.position='absolute'; medidor.style.left='-99999px'; medidor.style.top='0';
     document.body.appendChild(medidor);
+    /* Cortes de página por bloque (14-sep-2026). ARRIBA/ABAJO dejan libre el
+       marco y los triángulos de las esquinas. Se mide en el clon y el mismo
+       espaciador se inserta en el original, bloque por bloque. */
+    const ARRIBA = 48, ABAJO = 64;
+    const bM = medidor.querySelectorAll('[data-blk]');
+    const bR = nodo.querySelectorAll('[data-blk]');
+    const base = medidor.getBoundingClientRect().top;
+    for(let i=0;i<bM.length;i++){
+      const top = bM[i].getBoundingClientRect().top - base;
+      const h = bM[i].offsetHeight;
+      const pag = Math.floor(top / PAGINA);
+      let hueco = 0;
+      if(pag>0 && top < pag*PAGINA + ARRIBA) hueco = pag*PAGINA + ARRIBA - top;
+      else if(top + h > (pag+1)*PAGINA - ABAJO && h < PAGINA - ARRIBA - ABAJO) hueco = (pag+1)*PAGINA + ARRIBA - top;
+      if(hueco > 0){
+        [[bM[i], medidor], [bR[i], nodo]].forEach(function(par){
+          const sp = document.createElement('div');
+          sp.style.height = hueco + 'px';
+          par[0].parentNode.insertBefore(sp, par[0]);
+        });
+      }
+    }
     const alto = medidor.scrollHeight;
     document.body.removeChild(medidor);
     const paginas = Math.max(1, Math.ceil(alto / PAGINA));
@@ -10346,6 +10381,7 @@ async function generateSchedulePDF(mode) {
     html2canvas:{scale:2,useCORS:true,scrollY:0,scrollX:0},
     jsPDF:{unit:'in',format:'letter',orientation:'portrait'} };
   if(mode==='drive'){ return _uploadScheduleToDrive(container.firstChild, opt); }
+  if(mode==='blob'){ return html2pdf().set(opt).from(container.firstChild).outputPdf('blob'); }
   html2pdf().set(opt).from(container.firstChild).save();
 }
 
