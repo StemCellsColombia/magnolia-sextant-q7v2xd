@@ -2351,6 +2351,12 @@ const CLIENT_ID = '156879370669-l8iilr12vmqu4oeoal867qnho649t23o.apps.googleuser
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 let tokenClient, accessToken = null;
 
+// v8.63 (Alejo, 16-sep-2026): todas las citas del scheduling dejan de ir al
+// calendario principal de info@ y pasan al calendario secundario "Appointments"
+// (ya existía, descripción "pending schedules for patients"). Un solo lugar
+// para cambiarlo si el calendario destino cambia otra vez.
+const CITAS_CALENDAR_ID = 'c_37e52ec9a19bae5791d03567e00a75161d690ed611039bf4b7b38f6f9a30c1d1@group.calendar.google.com';
+
 document.getElementById('todayDate').textContent = new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'});
 
 function switchTab(tab, el) {
@@ -3115,7 +3121,7 @@ Otherwise, it will be considered confirmed and if the appointment was paid, the 
   // Si se arroba al doctor, Google le manda la invitación (sendUpdates=all)
   const sendUpdates = shouldInvite ? 'all' : 'none';
   try {
-    const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?sendUpdates=${sendUpdates}`, {
+    const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CITAS_CALENDAR_ID)}/events?sendUpdates=${sendUpdates}`, {
       method: 'POST',
       headers: {'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json'},
       body: JSON.stringify(body)
@@ -9268,7 +9274,7 @@ async function generateCalendarEvents(filtro) {
     try {
       // sendUpdates: 'all' envía correo/invitación (procedimientos); 'none' solo lo pone en el calendar (recordatorios).
       const _su = (ev.notify === true) ? 'all' : 'none';
-      const res=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?sendUpdates='+_su,{
+      const res=await fetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CITAS_CALENDAR_ID)+'/events?sendUpdates='+_su,{
         method:'POST',
         headers:{'Authorization':`Bearer ${accessToken}`,'Content-Type':'application/json'},
         body:JSON.stringify(body)
