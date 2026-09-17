@@ -1350,6 +1350,77 @@ Stem Cells Colombia | Medellín, Colombia</div>
   </div>
 </div>
 
+<!-- GETTING READY -->
+<div class="pcat">
+  <div class="pcat-head" onclick="togglePcat(this)">
+    <div class="pcat-title">📤 Getting Ready y Logística</div>
+    <div style="display:flex;align-items:center;gap:10px"><span class="pcat-count">4</span><span class="pcat-arrow">▼</span></div>
+  </div>
+  <div class="pcat-body">
+  <div class="prompt-card">
+    <div class="prompt-header"><div class="prompt-tag">Enviar Getting Ready — English</div><button class="copy-btn" onclick="copyPrompt(this,'p-getready-en')">&#128203; Copiar</button></div>
+    <div class="prompt-body" id="p-getready-en">Hi [PATIENT NAME],
+
+Your Getting Ready package is attached — please read it carefully before your arrival:
+
+📋  Pre-treatment instructions
+📋  Post-treatment care guide
+🍽️  Diet plan
+💊  Prescriptions
+
+If anything is unclear or you have questions, reach out anytime. We want you to arrive feeling fully prepared.
+
+Alejandro
+Stem Cells Colombia</div>
+  </div>
+  <div class="prompt-card">
+    <div class="prompt-header"><div class="prompt-tag">Enviar Getting Ready — Español</div><button class="copy-btn" onclick="copyPrompt(this,'p-getready-es')">&#128203; Copiar</button></div>
+    <div class="prompt-body" id="p-getready-es">Hola [NOMBRE PACIENTE],
+
+Adjunto tu Getting Ready — te pido que lo leas con calma antes de tu llegada:
+
+📋  Instrucciones pre-tratamiento
+📋  Guía de cuidados post-tratamiento
+🍽️  Plan de dieta
+💊  Prescripciones
+
+Si algo no está claro o tienes preguntas, me escribes cuando quieras. Queremos que llegues completamente preparado.
+
+Alejandro
+Stem Cells Colombia</div>
+  </div>
+  <div class="prompt-card">
+    <div class="prompt-header"><div class="prompt-tag">Preguntas logísticas (antes del Schedule)</div><button class="copy-btn" onclick="copyPrompt(this,'p-checklist-patient')">&#128203; Copiar</button></div>
+    <div class="prompt-body" id="p-checklist-patient">[NOMBRE PACIENTE], antes de enviarte el Schedule necesito confirmar un par de detalles:
+
+1️⃣  ¿Viajas solo o con acompañante? (si es con acompañante, ¿cuántas personas en total?)
+
+{{#hotel}}2️⃣  El hotel está incluido durante los días del tratamiento. Para los días adicionales antes o después, ¿te quedas en el mismo hotel o planeas moverte a otro lugar?{{#transfers}}
+→ Si cambias de hotel, ¿a cuál? Lo necesito para coordinar tu transfer al aeropuerto sin importar de dónde salgas.{{/transfers}}{{/hotel}}{{^hotel}}2️⃣  ¿En qué hotel te vas a quedar y cuáles son tus fechas de check-in y check-out? Lo necesito para armar bien tus horarios.{{/hotel}}
+
+Gracias — con eso lo dejo todo armado.
+
+Alejandro</div>
+  </div>
+  <div class="prompt-card">
+    <div class="prompt-header"><div class="prompt-tag">Pedirle a Mia exámenes / documentos (interno)</div><button class="copy-btn" onclick="copyPrompt(this,'p-ask-mia')">&#128203; Copiar</button></div>
+    <div class="prompt-body" id="p-ask-mia">Hola Mia 👋
+
+¿Tienes exámenes o documentos de [NOMBRE PACIENTE]?
+
+Antes de armarle el Schedule necesito saber qué hay:
+✓ MRI / Resonancia
+✓ Rayos X
+✓ Hemograma / Blood Test
+✓ EMG
+✓ Cancer Markers
+✓ Otros estudios
+
+Pásame lo que tengas. ¡Gracias! 😊</div>
+  </div>
+  </div>
+</div>
+
 <!-- CITAS Y RECORDATORIOS -->
 <div class="pcat">
   <div class="pcat-head" onclick="togglePcat(this)">
@@ -1688,77 +1759,6 @@ Cualquier duda, aquí estoy.
 
 Alejandro
 Stem Cells Colombia</div>
-  </div>
-  </div>
-</div>
-
-<!-- GETTING READY -->
-<div class="pcat">
-  <div class="pcat-head" onclick="togglePcat(this)">
-    <div class="pcat-title">📤 Getting Ready y Logística</div>
-    <div style="display:flex;align-items:center;gap:10px"><span class="pcat-count">4</span><span class="pcat-arrow">▼</span></div>
-  </div>
-  <div class="pcat-body">
-  <div class="prompt-card">
-    <div class="prompt-header"><div class="prompt-tag">Enviar Getting Ready — English</div><button class="copy-btn" onclick="copyPrompt(this,'p-getready-en')">&#128203; Copiar</button></div>
-    <div class="prompt-body" id="p-getready-en">Hi [PATIENT NAME],
-
-Your Getting Ready package is attached — please read it carefully before your arrival:
-
-📋  Pre-treatment instructions
-📋  Post-treatment care guide
-🍽️  Diet plan
-💊  Prescriptions
-
-If anything is unclear or you have questions, reach out anytime. We want you to arrive feeling fully prepared.
-
-Alejandro
-Stem Cells Colombia</div>
-  </div>
-  <div class="prompt-card">
-    <div class="prompt-header"><div class="prompt-tag">Enviar Getting Ready — Español</div><button class="copy-btn" onclick="copyPrompt(this,'p-getready-es')">&#128203; Copiar</button></div>
-    <div class="prompt-body" id="p-getready-es">Hola [NOMBRE PACIENTE],
-
-Adjunto tu Getting Ready — te pido que lo leas con calma antes de tu llegada:
-
-📋  Instrucciones pre-tratamiento
-📋  Guía de cuidados post-tratamiento
-🍽️  Plan de dieta
-💊  Prescripciones
-
-Si algo no está claro o tienes preguntas, me escribes cuando quieras. Queremos que llegues completamente preparado.
-
-Alejandro
-Stem Cells Colombia</div>
-  </div>
-  <div class="prompt-card">
-    <div class="prompt-header"><div class="prompt-tag">Preguntas logísticas (antes del Schedule)</div><button class="copy-btn" onclick="copyPrompt(this,'p-checklist-patient')">&#128203; Copiar</button></div>
-    <div class="prompt-body" id="p-checklist-patient">[NOMBRE PACIENTE], antes de enviarte el Schedule necesito confirmar un par de detalles:
-
-1️⃣  ¿Viajas solo o con acompañante? (si es con acompañante, ¿cuántas personas en total?)
-
-{{#hotel}}2️⃣  El hotel está incluido durante los días del tratamiento. Para los días adicionales antes o después, ¿te quedas en el mismo hotel o planeas moverte a otro lugar?{{#transfers}}
-→ Si cambias de hotel, ¿a cuál? Lo necesito para coordinar tu transfer al aeropuerto sin importar de dónde salgas.{{/transfers}}{{/hotel}}{{^hotel}}2️⃣  ¿En qué hotel te vas a quedar y cuáles son tus fechas de check-in y check-out? Lo necesito para armar bien tus horarios.{{/hotel}}
-
-Gracias — con eso lo dejo todo armado.
-
-Alejandro</div>
-  </div>
-  <div class="prompt-card">
-    <div class="prompt-header"><div class="prompt-tag">Pedirle a Mia exámenes / documentos (interno)</div><button class="copy-btn" onclick="copyPrompt(this,'p-ask-mia')">&#128203; Copiar</button></div>
-    <div class="prompt-body" id="p-ask-mia">Hola Mia 👋
-
-¿Tienes exámenes o documentos de [NOMBRE PACIENTE]?
-
-Antes de armarle el Schedule necesito saber qué hay:
-✓ MRI / Resonancia
-✓ Rayos X
-✓ Hemograma / Blood Test
-✓ EMG
-✓ Cancer Markers
-✓ Otros estudios
-
-Pásame lo que tengas. ¡Gracias! 😊</div>
   </div>
   </div>
 </div>
@@ -4004,11 +4004,13 @@ function saveSheetLinks() {
 }
 
 // ==================== SHEET MAESTRO ====================
-// The 11 checklist activities tracked in the master sheet
+// Las actividades reales que se siguen para cada paciente, en orden. No se
+// escriben como columnas del Sheet (el Maestro ya trae sus encabezados) —
+// es la referencia de la que sale el manual. "Llenar Formulario - Patient
+// Information" se sacó el 17-sep-2026: Alejo confirmó que no se hace.
 const MAESTRO_CHECKLIST = [
   'CRM - Descargar Contrato + Cotizacion',
   'Drive - Crear Carpeta (contrato + cotizacion + borrador Schedule)',
-  'Llenar Formulario - Patient Information',
   'Protocolos completos en Cliniko',
   'Revisar protocolos en Cliniko - Con fecha de tratamiento',
   'Solicitar examenes previos para Cliniko',
