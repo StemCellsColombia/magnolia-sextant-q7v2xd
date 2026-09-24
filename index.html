@@ -5390,7 +5390,7 @@ async function parseContractPdf(file){
 // así que buscamos cada dato por su PATRÓN propio (email parece email, pasaporte es letra+dígitos, etc.).
 // Algunos contracts traen los valores de los campos con CADA carácter repetido (x2, x3, x4)
 // por la fuente del formulario. Esto detecta el factor de repetición y lo colapsa.
-// Ej: "JJJJaaaa...ssss" -> "Jacqueline Chasteen". Si el texto es normal, lo deja igual.
+// Ej: "JJJJooooh...nnnn" -> "John Example". Si el texto es normal, lo deja igual.
 // Quita la multiplicación de los valores de formulario. Hay DOS formas según cómo extraiga el PDF:
 //  (A) letras pegadas: "JJJJaaaaccccqqqq..." -> "Jacqueline"
 //  (B) tokens/palabras repetidas: "Jacqueline Jacqueline Jacqueline Jacqueline" -> "Jacqueline"
@@ -5417,7 +5417,7 @@ function collapseRepeats(line){
   // Decidir el TIPO de multiplicación (son excluyentes):
   //  (B) tokens/secuencia repetida: mismo token 3+ veces seguidas, O la secuencia completa repetida.
   //  (A) letras pegadas: "JJJJaaaa..." sin espacios.
-  // Si es B, NO tocar letras (dañaría dobles legítimas como "Chasteen").
+  // Si es B, NO tocar letras (dañaría dobles legítimas como "Aaron" o "Mattews").
   const tokens = line.split(/\s+/).filter(t=>t!=='');
   let hasTokenRepeat = false;
   for(let i=0;i+2<tokens.length;i++){
@@ -5511,10 +5511,10 @@ function inferGenderFromName(fullName){
 }
 
 // ══════════ v8.21 · PARSER DE CONTRACT ANCLADO A ETIQUETAS ══════════
-// El contract real (verificado con el de Victor Tigreros) NO trae "todas las etiquetas y luego
+// El contract real (verificado con uno real del CRM) NO trae "todas las etiquetas y luego
 // todos los valores": trae cada valor en su propia línea, PEGADO a su etiqueta. Y en el orden
 // que extrae pdf.js, el VALOR viene ANTES de la etiqueta:
-//     Victor Tigreros
+//     Nombre Apellido
 //     NAME OF CLIENT:
 //     04-06-2004
 //     DATE OF BIRTH:
@@ -6158,7 +6158,7 @@ function applyContractData(rawText){
   return filled;
 }
 
-// Toma la primera ocurrencia real de un valor que viene repetido (ej "Jacqueline Chasteen" x4).
+// Toma la primera ocurrencia real de un valor que viene repetido (ej "John Example" x4).
 function dedupeFirstValue(s, re){
   const m = s.match(re);
   if(!m) return '';
@@ -12987,7 +12987,7 @@ function pacGuardarActual(silencioso){
      NOMBRE del registro activo contra el del formulario y creaba un registro
      nuevo si diferian — pero el autosave corre cada 1.5s, asi que ESCRIBIR
      el nombre letra a letra creaba un clon por pausa ("Julian" -> registro,
-     "Julian Betancur" -> otro). El id activo es el dueno del formulario:
+     "Nombre Apellido" -> otro). El id activo es el dueno del formulario:
      renombrar actualiza el MISMO paciente. Punto. */
   if(typeof _pacAplicando !== 'undefined' && _pacAplicando) return false;  // jamas guardar a mitad de una restauracion
   /* v8.64: si al ABRIR este paciente la restauración falló a la mitad, el formulario quedó parcial. El autoguardado
