@@ -140,10 +140,18 @@ img{display:block;max-width:100%}
 .contact img{border-radius:28px;aspect-ratio:4/5;object-fit:cover;width:100%}
 .contact .rows{margin-top:22px;display:grid;gap:10px}
 .contact .rows a{display:flex;gap:12px;align-items:center;padding:14px 18px;border-radius:16px;background:var(--mist);text-decoration:none;font-weight:600;color:var(--deep)}
-.foot{padding:28px 0;text-align:center;color:var(--mut);font-size:13.5px;border-top:1px solid var(--line)}
+.foot{padding:28px 0 96px;text-align:center;color:var(--mut);font-size:13.5px;border-top:1px solid var(--line)}
 .all{margin-top:14px;font-size:14px}
 .all a{color:var(--ocean);font-weight:600;cursor:pointer}
 
+/* barra de navegación fija: aparece al pasar la portada */
+.nav{position:fixed;left:50%;bottom:14px;transform:translate(-50%,130%);z-index:50;display:flex;gap:4px;padding:6px;border-radius:999px;background:rgba(5,22,40,.92);backdrop-filter:blur(10px);box-shadow:0 12px 34px rgba(5,22,40,.35);transition:transform .3s ease;max-width:calc(100% - 24px)}
+.nav.on{transform:translate(-50%,0)}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 14px;border-radius:999px;color:#cfe3f5;text-decoration:none;font:600 12px/1.1 Poppins,sans-serif;white-space:nowrap}
+.nav a b{font-size:17px;line-height:1}
+.nav a.act{background:rgba(126,240,217,.16);color:#fff}
+.nav a.wa{background:#25D366;color:#05331a}
+@media (max-width:420px){ .nav a{padding:7px 10px;font-size:11px} }
 @media (max-width:900px){
   .rule:last-child:nth-child(odd){grid-column:auto}
   .promise{grid-template-columns:1fr 1fr}
@@ -158,6 +166,7 @@ img{display:block;max-width:100%}
 }
 @media (max-width:520px){ .logo{height:32px} .lang button{padding:6px 10px} .weeks{grid-template-columns:1fr} .promise{grid-template-columns:1fr} .hero__body{padding-top:120px} }
 @media print{
+  .nav{display:none!important}
   @page{size:A4;margin:12mm}
   body{font-size:12.5pt}
   .lang,.hero__cta,.all,.noprint{display:none!important}
@@ -284,7 +293,7 @@ img{display:block;max-width:100%}
   </div>
 </section>
 
-<section class="sec mist">
+<section class="sec mist" id="medellin">
   <div class="wrap">
     <div class="eyebrow"><span class="dot"></span><span data-t="medEy"></span></div>
     <h2 class="h2" data-t="medH"></h2>
@@ -329,7 +338,7 @@ img{display:block;max-width:100%}
   </div>
 </section>
 
-<section class="sec mist">
+<section class="sec mist" id="contact">
   <div class="wrap contact">
     <img src="guia/mia.jpg" alt="Mia Angel">
     <div>
@@ -345,6 +354,13 @@ img{display:block;max-width:100%}
   </div>
 </section>
 
+<nav class="nav" id="nav" aria-label="Guide">
+  <a href="#rules" data-s="rules"><b>⭐</b><span data-t="navRules"></span></a>
+  <a href="#care" data-s="care" id="navCare"><b>🩺</b><span data-t="navCare"></span></a>
+  <a href="#medellin" data-s="medellin"><b>🌴</b><span>Medellín</span></a>
+  <a class="wa" href="https://wa.me/573108819333" target="_blank" rel="noopener"><b>💬</b><span>WhatsApp</span></a>
+</nav>
+
 <footer class="foot"><div class="wrap" data-t="foot"></div></footer>
 
 <script>
@@ -355,7 +371,7 @@ en:{
   ctaStart:'Start reading ↓', ctaPdf:'⬇ Save as PDF',
   safeEy:'Your safety comes first', safeH:'A medical team by your side, every step of the way',
   safeSub:'Your procedure is carried out by highly experienced professionals. If you have any question at any moment, write to us — we are here to help.',
-  p1:'years of minimum experience of each professional on our team', p2:'single point of contact for your whole trip', p3:'a direct WhatsApp line with your team during your treatment',
+  p1:'years of experience, at minimum, for every professional on our team', p2:'single point of contact for your whole trip', p3:'a direct WhatsApp line with your team during your treatment',
   routeEy:'Your treatment in three steps', routeH:'Simple, clear and guided',
   s1h:'Before', s1:'<li>Sleep well, rest, hydrate and eat well.</li><li>No alcohol or recreational drugs.</li><li>Follow the <a href="#diet">anti-inflammatory diet</a>.</li>',
   s2h:'During', s2:'<li>Our team guides you through the whole process.</li><li>Your coordinator handles times, rides and appointments.</li>',
@@ -370,18 +386,18 @@ en:{
   d8:'first 8 days', d7:'1 week', tagFor:'for',
   ivEy:'Your care · IV treatment', ivH:'After your IV treatment', ivCap:'IV treatment, with our team by your side',
   ivSub:'Each person reacts differently: some people feel nothing in particular and others simply want to rest.',
-  ivList:'<li><i>🛋️</i><span><b>3 days without intense physical activity.</b> Then start gradually — the gym is fine from day 3.</span></li><li><i>🌊</i><span><b>No pool, hot tub, sauna or jacuzzi</b> for the first 8 days.</span></li><li><i>🥗</i><span><b>Anti-inflammatory diet</b>, and no alcohol or recreational drugs for 2 weeks after your treatment.</span></li>',
+  ivList:'<li><i>🛋️</i><span><b>3 days without intense physical activity.</b> Then start gradually — the gym is fine from day 3.</span></li><li><i>🌊</i><span><b>No pool, hot tub, sauna or jacuzzi</b> for the first 8 days.</span></li><li><i>🥗</i><span><b>Anti-inflammatory diet</b>, and no alcohol or recreational drugs from 2 weeks before your treatment until 2 weeks after.</span></li>',
   faceEy:'Your care · Face', faceH:'After your facial treatment', faceCap:'Facial rejuvenation at Stem Cells Colombia',
   faceSub:'Your skin may look a little puffy for 2–3 days — sometimes a bit longer, depending on your skin.',
   faceList:'<li><i>😴</i><span><b>Don’t sleep face down</b> for the first 2 days.</span></li><li><i>☀️</i><span><b>No pool, sauna, steam room or intense sun</b> for 1 week.</span></li><li><i>🏃</i><span><b>Intense exercise from day 3</b>, gradually.</span></li>',
-  boostEy:'Keep your results', faceBoost:'A booster with exosomes or PRP is recommended from one month after your treatment, for 3 months — you can do it near home. Then PRP every six months, or as your dermatologist advises.',
+  boostEy:'Keep your results', faceBoost:'A booster with exosomes or PRP is recommended starting one month after your treatment, for 3 months — you can do it near home. Then PRP every six months, or as your dermatologist advises.',
   hairEy:'Your care · Hair', hairH:'After your hair treatment', hairCap:'Hair restoration at Stem Cells Colombia',
   hairSub:'Your scalp may look a little puffy for 2–3 days — sometimes a bit longer, depending on your skin.',
   hairList:'<li><i>😴</i><span><b>Don’t sleep face down</b> for the first 2 days.</span></li><li><i>☀️</i><span><b>No pool, sauna, steam room or intense sun</b> for 1 week.</span></li><li><i>🏃</i><span><b>Intense exercise from day 3</b>, gradually.</span></li>',
-  hairBoost:'A PRP booster is essential: from one month after your treatment, for 3–4 months — you can do it near home. Then PRP every six months, or as your dermatologist advises.',
+  hairBoost:'A PRP booster is essential: starting one month after your treatment, for 3–4 months — you can do it near home. Then PRP every six months, or as your dermatologist advises.',
   hairExtra:'<b>Helpful at home:</b> Nutrafol supplements, biotin, rosemary-oil shampoo and goat-milk shampoo.',
   psEy:'Your care · P-Shot / V-Shot', psH:'After your P-Shot or V-Shot', psCap:'Sexual wellness treatment',
-  psSub:'You may notice mild tenderness at the application site for a short time, and some people feel a little tired the first day. Follow your doctor’s orders.',
+  psSub:'You may notice mild tenderness at the application site, and some people feel a little tired or have a low fever. Both pass quickly. Follow your doctor’s orders.',
   psList:'<li><i>🏋️</i><span><b>Gym from day 3.</b></span></li><li><i>🌊</i><span><b>No pool, hot tub, sauna or jacuzzi</b> for the first 8 days.</span></li>',
   psBoost:'A PRP booster is essential every month for 3–4 months for the best results. Then every 6 months, or as your doctor recommends.',
   jEy:'Your care · Joint, neck or back', jH:'After your joint or spine application', jCap:'Ultrasound-guided application',
@@ -389,10 +405,11 @@ en:{
   jList:'<li><i>🧴</i><span><b>Analgesic creams or gels</b> (Biofreeze, Traumeel) help you feel comfortable.</span></li><li><i>💊</i><span><b>Acetaminophen / Tylenol</b> or the prescription your doctor gives you.</span></li><li><i>🌊</i><span><b>No pool, jacuzzi, bathtub, sauna, steam room or intense sun</b> for 1 week.</span></li>',
   wH:'Your first month, week by week',
   w1k:'Week 1', w1h:'Rest and light activity', w1:'<p>Light everyday activity only.</p><p>First 24–48 h: no more than 30 minutes on your feet at a time.</p><p>Moving gently is better than staying still.</p>',
-  w2k:'Week 2', w2h:'Back to your routine', w2:'<p>Your regular routine, without strenuous activity.</p><p>Stretching or yoga are fine. No running or weights until week 3.</p>',
+  w2k:'Week 2', w2h:'Back to your routine', w2:'<p>Your regular routine, without strenuous activity.</p><p>Stretching or yoga are fine. No running or weight lifting during the first 3 weeks.</p>',
   w3k:'Week 3', w3h:'Physical therapy', w3:'<p>More active physical therapy and very light resistance.</p><p>Avoid compression: squats, leg lifts, calf raises, twists. Listen to your body.</p>',
   w4k:'Week 4', w4h:'Light running', w4:'<p>Light running on even, soft ground, a treadmill or a track.</p><p>Progress slowly to your normal workout — never to the point of pain in the treated area.</p>',
   wCall:'<b>Some soreness for a few days is normal.</b> If the pain becomes severe, write to us right away on WhatsApp.',
+  navRules:'Rules', navCare:'My care',
   showAll:'Show the care for all treatments', showMine:'Show only my treatment',
   dietEy:'Your nutrition', dietH:'Anti-Inflammatory Lifestyle Guide', dietP:'Nutrition, movement, recovery and recipes for a healthier daily routine — before and after your treatment.', dietBtn:'Open the guide (PDF) →',
   medEy:'Enjoy Medellín', medH:'The city of eternal spring', medSub:'Between appointments, take some time for yourself. A few favorites from our team:',
@@ -415,7 +432,7 @@ es:{
   ctaStart:'Empezar a leer ↓', ctaPdf:'⬇ Guardar en PDF',
   safeEy:'Tu seguridad primero', safeH:'Un equipo médico a tu lado en cada paso',
   safeSub:'Tu procedimiento lo realizan profesionales con mucha experiencia. Si tienes cualquier pregunta, en cualquier momento, escríbenos: estamos para ayudarte.',
-  p1:'años de experiencia mínima de cada profesional de nuestro equipo', p2:'solo contacto para todo tu viaje', p3:'línea directa por WhatsApp con tu equipo durante tu tratamiento',
+  p1:'años de experiencia, como mínimo, de cada profesional de nuestro equipo', p2:'único contacto para todo tu viaje', p3:'línea directa por WhatsApp con tu equipo durante tu tratamiento',
   routeEy:'Tu tratamiento en tres pasos', routeH:'Simple, claro y acompañado',
   s1h:'Antes', s1:'<li>Duerme bien, descansa, hidrátate y come bien.</li><li>Nada de alcohol ni drogas.</li><li>Sigue la <a href="#diet">dieta antiinflamatoria</a>.</li>',
   s2h:'Durante', s2:'<li>Nuestro equipo te guía en todo el proceso.</li><li>Tu coordinador se encarga de horarios, traslados y citas.</li>',
@@ -430,18 +447,18 @@ es:{
   d8:'primeros 8 días', d7:'1 semana', tagFor:'para',
   ivEy:'Tus cuidados · Tratamiento IV', ivH:'Después de tu tratamiento IV', ivCap:'Tratamiento IV, con nuestro equipo a tu lado',
   ivSub:'Cada persona reacciona distinto: algunas no sienten nada en particular y otras solo quieren descansar.',
-  ivList:'<li><i>🛋️</i><span><b>3 días sin actividad física intensa.</b> Después, vuelve de a poco: el gimnasio está bien desde el día 3.</span></li><li><i>🌊</i><span><b>Nada de piscina, tina caliente, sauna ni jacuzzi</b> los primeros 8 días.</span></li><li><i>🥗</i><span><b>Dieta antiinflamatoria</b>, y nada de alcohol ni drogas durante las 2 semanas siguientes al tratamiento.</span></li>',
+  ivList:'<li><i>🛋️</i><span><b>3 días sin actividad física intensa.</b> Después, vuelve de a poco: el gimnasio está bien desde el día 3.</span></li><li><i>🌊</i><span><b>Nada de piscina, tina caliente, sauna ni jacuzzi</b> los primeros 8 días.</span></li><li><i>🥗</i><span><b>Dieta antiinflamatoria</b>, y nada de alcohol ni drogas desde 2 semanas antes del tratamiento hasta 2 semanas después.</span></li>',
   faceEy:'Tus cuidados · Rostro', faceH:'Después de tu tratamiento facial', faceCap:'Rejuvenecimiento facial en Stem Cells Colombia',
   faceSub:'Tu piel puede verse un poco inflamada durante 2 o 3 días, a veces un poco más, según tu piel.',
   faceList:'<li><i>😴</i><span><b>No duermas boca abajo</b> los primeros 2 días.</span></li><li><i>☀️</i><span><b>Nada de piscina, sauna, baño turco ni sol intenso</b> durante 1 semana.</span></li><li><i>🏃</i><span><b>Ejercicio intenso desde el día 3</b>, de a poco.</span></li>',
-  boostEy:'Mantén tus resultados', faceBoost:'Se recomienda un refuerzo con exosomas o PRP desde el mes del tratamiento, durante 3 meses; lo puedes hacer cerca de casa. Después, PRP cada seis meses o según te indique tu dermatólogo.',
+  boostEy:'Mantén tus resultados', faceBoost:'Se recomienda un refuerzo con exosomas o PRP a partir del primer mes después del tratamiento, durante 3 meses; lo puedes hacer cerca de casa. Después, PRP cada seis meses o según te indique tu dermatólogo.',
   hairEy:'Tus cuidados · Cabello', hairH:'Después de tu tratamiento capilar', hairCap:'Restauración capilar en Stem Cells Colombia',
   hairSub:'Tu cuero cabelludo puede verse un poco inflamado durante 2 o 3 días, a veces un poco más, según tu piel.',
   hairList:'<li><i>😴</i><span><b>No duermas boca abajo</b> los primeros 2 días.</span></li><li><i>☀️</i><span><b>Nada de piscina, sauna, baño turco ni sol intenso</b> durante 1 semana.</span></li><li><i>🏃</i><span><b>Ejercicio intenso desde el día 3</b>, de a poco.</span></li>',
-  hairBoost:'El refuerzo con PRP es indispensable: desde el mes del tratamiento, durante 3 a 4 meses; lo puedes hacer cerca de casa. Después, PRP cada seis meses o según te indique tu dermatólogo.',
+  hairBoost:'El refuerzo con PRP es indispensable: a partir del primer mes después del tratamiento, durante 3 a 4 meses; lo puedes hacer cerca de casa. Después, PRP cada seis meses o según te indique tu dermatólogo.',
   hairExtra:'<b>Te ayuda en casa:</b> suplementos Nutrafol, biotina, champú de aceite de romero y champú de leche de cabra.',
   psEy:'Tus cuidados · P-Shot / V-Shot', psH:'Después de tu P-Shot o V-Shot', psCap:'Tratamiento de bienestar sexual',
-  psSub:'Puedes notar una leve sensibilidad en la zona por poco tiempo, y algunas personas se sienten un poco cansadas el primer día. Sigue las indicaciones de tu doctor.',
+  psSub:'Puedes notar una leve sensibilidad en la zona, y algunas personas se sienten un poco cansadas o con algo de fiebre. Ambas cosas pasan rápido. Sigue las indicaciones de tu doctor.',
   psList:'<li><i>🏋️</i><span><b>Gimnasio desde el día 3.</b></span></li><li><i>🌊</i><span><b>Nada de piscina, tina caliente, sauna ni jacuzzi</b> los primeros 8 días.</span></li>',
   psBoost:'El refuerzo con PRP es indispensable cada mes durante 3 a 4 meses para el mejor resultado. Después, cada 6 meses o según te indique tu doctor.',
   jEy:'Tus cuidados · Articulación, cuello o columna', jH:'Después de tu aplicación en articulación o columna', jCap:'Aplicación guiada por ecografía',
@@ -449,10 +466,11 @@ es:{
   jList:'<li><i>🧴</i><span><b>Cremas o geles analgésicos</b> (Biofreeze, Traumeel) te ayudan a estar cómodo.</span></li><li><i>💊</i><span><b>Acetaminofén / Tylenol</b> o la fórmula que te dé tu doctor.</span></li><li><i>🌊</i><span><b>Nada de piscina, jacuzzi, tina, sauna, baño turco ni sol intenso</b> durante 1 semana.</span></li>',
   wH:'Tu primer mes, semana a semana',
   w1k:'Semana 1', w1h:'Descanso y actividad suave', w1:'<p>Solo actividad suave del día a día.</p><p>Primeras 24–48 h: no más de 30 minutos de pie seguidos.</p><p>Moverte suave es mejor que quedarte quieto.</p>',
-  w2k:'Semana 2', w2h:'De vuelta a tu rutina', w2:'<p>Tu rutina normal, sin actividad exigente.</p><p>Estiramientos o yoga, sí. Correr o pesas, desde la semana 3.</p>',
+  w2k:'Semana 2', w2h:'De vuelta a tu rutina', w2:'<p>Tu rutina normal, sin actividad exigente.</p><p>Estiramientos o yoga, sí. Nada de correr ni levantar pesas durante las primeras 3 semanas.</p>',
   w3k:'Semana 3', w3h:'Terapia física', w3:'<p>Terapia física más activa y resistencia muy liviana.</p><p>Evita la compresión: sentadillas, elevaciones de pierna, de pantorrilla, giros. Escucha a tu cuerpo.</p>',
   w4k:'Semana 4', w4h:'Trote suave', w4:'<p>Trote suave en terreno plano y blando, caminadora o pista.</p><p>Avanza despacio hacia tu entrenamiento normal, nunca hasta sentir dolor en la zona tratada.</p>',
   wCall:'<b>Algo de molestia unos días es normal.</b> Si el dolor se vuelve fuerte, escríbenos de inmediato por WhatsApp.',
+  navRules:'Reglas', navCare:'Mis cuidados',
   showAll:'Ver los cuidados de todos los tratamientos', showMine:'Ver solo mi tratamiento',
   dietEy:'Tu alimentación', dietH:'Guía de estilo de vida antiinflamatorio', dietP:'Alimentación, movimiento, recuperación y recetas para una rutina más sana, antes y después de tu tratamiento. (En inglés.)', dietBtn:'Abrir la guía (PDF) →',
   medEy:'Disfruta Medellín', medH:'La ciudad de la eterna primavera', medSub:'Entre cita y cita, date un tiempo para ti. Algunos favoritos de nuestro equipo:',
@@ -505,6 +523,18 @@ function render(){
 document.querySelectorAll('.lang button').forEach(b => b.onclick = () => { lang = b.dataset.l; render(); });
 document.querySelector('.diet').id = 'diet';
 render();
+function careAnchor(){ document.querySelectorAll('.mod').forEach(m => m.removeAttribute('id')); const f = document.querySelector('.mod.on'); if(f) f.id = 'care'; }
+careAnchor();
+const _render = render; render = function(){ _render(); careAnchor(); };
+const nav = document.getElementById('nav'), hero = document.querySelector('.hero');
+function navSync(){
+  nav.classList.toggle('on', window.scrollY > hero.offsetHeight * 0.6);
+  const y = window.scrollY + innerHeight * 0.35; let act = '';
+  [['rules','rules'],['care','care'],['medellin','medellin']].forEach(([id, k]) => { const el = document.getElementById(id); if(el && el.offsetTop <= y) act = k; });
+  const mods = Array.from(document.querySelectorAll('.mod.on')); if(mods.length){ const last = mods[mods.length-1]; if(act === 'care' && y > last.offsetTop + last.offsetHeight) act = ''; }
+  nav.querySelectorAll('a[data-s]').forEach(a => a.classList.toggle('act', a.dataset.s === act));
+}
+addEventListener('scroll', navSync, { passive:true }); navSync();
 </script>
 </body>
 </html>
