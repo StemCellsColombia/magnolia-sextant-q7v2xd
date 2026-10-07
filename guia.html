@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting Ready — Stem Cells Colombia</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="https://stemcellscolombia.com/wp-content/uploads/2025/04/cropped-stem-azul-rey-2-32x32.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- Getting Ready a la medida (v1, 7-oct-2026). UNA página con todos los módulos; el enlace del correo trae ?t=joint,iv&l=es
+     y solo se prenden los módulos de ese paciente. Sin datos del paciente en la URL ni en la página. Paleta y tipografía = línea kx de la web. -->
+<style>
+:root{--deep:#0a2a52;--navy:#051628;--ocean:#2E6DB4;--aqua:#37C6D0;--mint:#7EF0D9;--ink:#0E2236;--mut:#56687d;--mist:#eef4fb;--line:#e1ebf6;--warm:#fff7ec}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--ink);font:17px/1.6 "Source Sans 3",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+h1,h2,h3{font-family:Poppins,system-ui,sans-serif;margin:0;letter-spacing:-.02em}
+p{margin:0}
+a{color:inherit}
+img{display:block;max-width:100%}
+.wrap{width:min(1120px,100% - 32px);margin-inline:auto}
+.narrow{width:min(860px,100% - 32px);margin-inline:auto}
+.sec{padding:clamp(56px,8vw,110px) 0;position:relative}
+.mist{background:var(--mist)}
+.dark{background:radial-gradient(1100px 600px at 85% 0%,rgba(55,198,208,.16),transparent 60%),linear-gradient(160deg,#051628,#0b2f5c);color:#fff}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font:700 12px/1 Poppins,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--ocean);margin-bottom:16px}
+.dark .eyebrow,.hero .eyebrow{color:var(--mint)}
+.hero .sub{color:rgba(255,255,255,.85)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--aqua);box-shadow:0 0 0 5px rgba(55,198,208,.2)}
+.h2{font-size:clamp(30px,4vw,50px);line-height:1.08;font-weight:800;color:var(--deep)}
+.dark .h2{color:#fff}
+.h3{font-size:clamp(18px,1.6vw,21px);line-height:1.3;font-weight:700;color:var(--deep)}
+.sub{font-size:clamp(17px,1.5vw,19.5px);line-height:1.6;color:var(--mut);margin-top:14px;max-width:680px}
+.dark .sub{color:rgba(255,255,255,.8)}
+.grad{background:linear-gradient(90deg,#7EF0D9,#37C6D0 45%,#6fb3ff);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:999px;font:700 15px/1 Poppins,sans-serif;text-decoration:none;border:0;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn--main{background:linear-gradient(90deg,#37C6D0,#7EF0D9);color:#051628}
+.btn--ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.28)}
+.btn--ink{background:var(--deep);color:#fff}
+
+/* HERO */
+.hero{position:relative;min-height:min(92vh,760px);display:flex;align-items:flex-end;color:#fff;background:#051628;overflow:hidden}
+.hero__img{position:absolute;inset:0;background:url(https://stemcellscolombia.com/wp-content/uploads/2026/09/scc-incodol-or-prep-1536x1024.jpg) center/cover;opacity:.55}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,22,40,.35),rgba(5,22,40,.55) 45%,#051628 96%)}
+.hero__top{position:absolute;top:22px;left:0;right:0;z-index:2}
+.hero__top .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{height:44px;filter:brightness(0) invert(1)}
+.lang{display:flex;background:rgba(255,255,255,.12);border-radius:999px;padding:4px}
+.lang button{border:0;background:none;color:#fff;font:700 13px Poppins,sans-serif;padding:7px 13px;border-radius:999px;cursor:pointer}
+.lang button.on{background:#fff;color:var(--deep)}
+.hero__body{position:relative;z-index:2;padding:150px 0 clamp(48px,7vw,90px)}
+.hero h1{font-size:clamp(40px,6.6vw,84px);line-height:1;font-weight:800}
+.hero h1 small{display:block;font-size:clamp(16px,1.6vw,20px);font-weight:600;letter-spacing:0;color:rgba(255,255,255,.75);margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(126,240,217,.14);border:1px solid rgba(126,240,217,.4);font:600 14px Poppins,sans-serif;color:#dffcf6}
+.hero__cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+
+/* PROMESA */
+.promise{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
+.promise div{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px}
+.promise b{display:block;font:800 30px/1 Poppins,sans-serif;color:var(--ocean);margin-bottom:8px}
+.promise span{color:var(--mut);font-size:15.5px;line-height:1.45;display:block}
+
+/* RUTA */
+.route{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px;counter-reset:r}
+.step{position:relative;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:28px 24px}
+.step__n{font:800 54px/1 Poppins,sans-serif;color:transparent;-webkit-text-stroke:1.5px var(--aqua);margin-bottom:14px}
+.step h3{color:#fff;font-size:20px;margin-bottom:10px}
+.step ul{margin:0;padding-left:18px;color:rgba(255,255,255,.82);font-size:16px}
+.step li{margin:5px 0}
+.step a{color:var(--mint)}
+
+/* REGLAS */
+.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:40px}
+.rule{display:flex;gap:16px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px}
+.rule__ic{flex:0 0 52px;height:52px;border-radius:16px;background:linear-gradient(140deg,#e6fbf8,#e3eefc);display:grid;place-items:center;font-size:24px}
+.rule:last-child:nth-child(odd){grid-column:span 2}
+.rule p{color:var(--mut);font-size:15.5px;margin-top:6px}
+.rule .tag{display:inline-block;margin:8px 6px 0 0;padding:4px 10px;border-radius:999px;background:var(--mist);color:var(--deep);font:600 12.5px Poppins,sans-serif}
+.okbox{margin-top:16px;display:flex;gap:14px;align-items:center;background:#ecfdf7;border:1px solid #a7f3d0;border-radius:18px;padding:16px 20px;color:#065f46;font-weight:600}
+
+/* MÓDULOS */
+.mod{display:none}
+.mod.on{display:block}
+.modgrid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(24px,4vw,56px);align-items:center}
+.modgrid--rev .modimg{order:2}
+.modimg{position:relative;border-radius:28px;overflow:hidden;aspect-ratio:4/5;background:#dfe9f5}
+.modimg img{width:100%;height:100%;object-fit:cover}
+.modimg figcaption{position:absolute;left:16px;bottom:16px;right:16px;background:rgba(5,22,40,.72);backdrop-filter:blur(6px);color:#fff;border-radius:16px;padding:12px 16px;font:600 14px Poppins,sans-serif}
+.list{list-style:none;padding:0;margin:24px 0 0}
+.list li{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);font-size:16.5px}
+.list li:last-child{border-bottom:0}
+.list i{flex:0 0 30px;height:30px;border-radius:10px;background:var(--mist);display:grid;place-items:center;font-style:normal;font-size:15px}
+.list b{color:var(--deep)}
+.boost{margin-top:22px;border-radius:20px;padding:20px 22px;background:linear-gradient(135deg,#0a2a52,#14508f);color:#fff}
+.boost h4{font:700 13px Poppins,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin:0 0 8px}
+.boost p{color:rgba(255,255,255,.88);font-size:16px}
+.soft{margin-top:18px;background:var(--warm);border:1px solid #f6dfbd;border-radius:18px;padding:16px 20px;font-size:15.5px;color:#6b4a1a}
+
+/* SEMANAS */
+.weeks{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px}
+.week{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;position:relative;overflow:hidden}
+.week::before{content:"";position:absolute;left:0;top:0;height:5px;width:var(--w);background:linear-gradient(90deg,#37C6D0,#7EF0D9)}
+.week span{font:700 12px Poppins,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--ocean)}
+.week h3{font-size:19px;margin:8px 0 10px;color:var(--deep)}
+.week p{font-size:15.5px;color:var(--mut);margin-top:6px}
+
+/* DIETA */
+.diet{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:30px;overflow:hidden;background:var(--deep);color:#fff}
+.diet__img{background:url(guia/dieta.jpg) center/cover;min-height:340px}
+.diet__txt{padding:clamp(28px,4vw,52px)}
+.diet__txt .h2{color:#fff;font-size:clamp(28px,3.4vw,42px)}
+.diet__txt p{color:rgba(255,255,255,.82);margin:14px 0 24px}
+
+/* MEDELLÍN */
+.gal{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:200px 200px;gap:12px;margin-top:36px}
+.gal div{border-radius:22px;background-size:cover;background-position:center}
+.gal div:first-child{grid-row:span 2}
+.places{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:36px}
+.places h3{font-size:18px;margin-bottom:10px;color:var(--deep)}
+.places ul{list-style:none;padding:0;margin:0}
+.places li{padding:10px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;font-size:16px}
+.places li a{color:var(--ocean);font-weight:600;text-decoration:none;white-space:nowrap}
+.places em{color:var(--mut);font-style:normal;font-size:14px}
+
+/* REFERIDOS + MÁS */
+.ref{display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,4vw,48px);align-items:center}
+.ref__big{font:800 clamp(90px,14vw,170px)/.85 Poppins,sans-serif}
+.conds{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.conds span{padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);font-size:14.5px}
+.more{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px}
+.more div{border:1px solid var(--line);border-radius:20px;padding:22px;background:#fff}
+.more b{display:block;font:700 17px Poppins,sans-serif;color:var(--deep);margin:10px 0 6px}
+.more p{color:var(--mut);font-size:15px}
+
+/* CONTACTO */
+.contact{display:grid;grid-template-columns:320px 1fr;gap:clamp(24px,4vw,56px);align-items:center}
+.contact img{border-radius:28px;aspect-ratio:4/5;object-fit:cover;width:100%}
+.contact .rows{margin-top:22px;display:grid;gap:10px}
+.contact .rows a{display:flex;gap:12px;align-items:center;padding:14px 18px;border-radius:16px;background:var(--mist);text-decoration:none;font-weight:600;color:var(--deep)}
+.foot{padding:28px 0;text-align:center;color:var(--mut);font-size:13.5px;border-top:1px solid var(--line)}
+.all{margin-top:14px;font-size:14px}
+.all a{color:var(--ocean);font-weight:600;cursor:pointer}
+
+@media (max-width:900px){
+  .rule:last-child:nth-child(odd){grid-column:auto}
+  .promise{grid-template-columns:1fr 1fr}
+  .route,.rules,.weeks,.more{grid-template-columns:1fr}
+  .weeks{grid-template-columns:1fr 1fr}
+  .modgrid,.diet,.contact,.ref,.places{grid-template-columns:1fr}
+  .modgrid--rev .modimg{order:0}
+  .modimg{aspect-ratio:16/11}
+  .contact img{max-width:280px}
+  .gal{grid-template-columns:1fr 1fr;grid-template-rows:180px 140px 140px}
+  .gal div:first-child{grid-column:span 2;grid-row:auto}
+}
+@media (max-width:520px){ .logo{height:32px} .lang button{padding:6px 10px} .weeks{grid-template-columns:1fr} .promise{grid-template-columns:1fr} .hero__body{padding-top:120px} }
+@media print{
+  @page{size:A4;margin:12mm}
+  body{font-size:12.5pt}
+  .lang,.hero__cta,.all,.noprint{display:none!important}
+  .hero{min-height:auto;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .hero__body{padding:90px 0 40px}
+  .sec{padding:28px 0;break-inside:avoid}
+  .dark,.boost,.diet,.mist{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .mod.on,.week,.rule,.step{break-inside:avoid}
+  .modimg{aspect-ratio:16/9;max-height:220px}
+  .gal{display:none}
+}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} .btn{transition:none} }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero__img" role="img" aria-label=""></div>
+  <div class="hero__top"><div class="wrap">
+    <img class="logo" src="https://stemcellscolombia.com/wp-content/uploads/2026/07/scc-logo-stemcells.png" alt="Stem Cells Colombia">
+    <div class="lang" role="group" aria-label="Language"><button data-l="en">EN</button><button data-l="es">ES</button></div>
+  </div></div>
+  <div class="hero__body wrap">
+    <div class="eyebrow"><span class="dot"></span><span data-t="eyebrow"></span></div>
+    <h1><small data-t="kicker"></small><span data-t="h1a"></span> <span class="grad" data-t="h1b"></span></h1>
+    <p class="sub" data-t="heroSub"></p>
+    <div class="chips" id="chips"></div>
+    <div class="hero__cta">
+      <a class="btn btn--main" href="#rules" data-t="ctaStart"></a>
+      <button class="btn btn--ghost" onclick="window.print()" data-t="ctaPdf"></button>
+    </div>
+  </div>
+</header>
+
+<section class="sec mist">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span><span data-t="safeEy"></span></div>
+    <h2 class="h2" data-t="safeH"></h2>
+    <p class="sub" data-t="safeSub"></p>
+    <div class="promise">
+      <div><b>12+</b><span data-t="p1"></span></div>
+      <div><b>1</b><span data-t="p2"></span></div>
+      <div><b>💬</b><span data-t="p3"></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec dark">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span><span data-t="routeEy"></span></div>
+    <h2 class="h2" data-t="routeH"></h2>
+    <div class="route">
+      <div class="step"><div class="step__n">01</div><h3 data-t="s1h"></h3><ul data-t="s1" data-html></ul></div>
+      <div class="step"><div class="step__n">02</div><h3 data-t="s2h"></h3><ul data-t="s2" data-html></ul></div>
+      <div class="step"><div class="step__n">03</div><h3 data-t="s3h"></h3><ul data-t="s3" data-html></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="rules">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span><span data-t="rulesEy"></span></div>
+    <h2 class="h2" data-t="rulesH"></h2>
+    <p class="sub" data-t="rulesSub"></p>
+    <div class="rules" id="rulesBox"></div>
+    <div class="okbox"><span style="font-size:26px">✅</span><span data-t="okTake"></span></div>
+  </div>
+</section>
+
+<!-- MÓDULOS POR TRATAMIENTO -->
+<section class="sec mist mod" data-m="iv"><div class="wrap modgrid">
+  <figure class="modimg" style="margin:0"><img loading="lazy" src="https://stemcellscolombia.com/wp-content/uploads/2025/07/DFR8641-3-1536x1024.jpg" alt=""><figcaption data-t="ivCap"></figcaption></figure>
+  <div><div class="eyebrow"><span class="dot"></span><span data-t="ivEy"></span></div><h2 class="h2" data-t="ivH"></h2><p class="sub" data-t="ivSub"></p><ul class="list" data-t="ivList" data-html></ul></div>
+</div></section>
+
+<section class="sec mod" data-m="face"><div class="wrap modgrid modgrid--rev">
+  <figure class="modimg" style="margin:0"><img loading="lazy" src="https://stemcellscolombia.com/wp-content/uploads/2026/09/facial-2-scaled.jpg" alt=""><figcaption data-t="faceCap"></figcaption></figure>
+  <div><div class="eyebrow"><span class="dot"></span><span data-t="faceEy"></span></div><h2 class="h2" data-t="faceH"></h2><p class="sub" data-t="faceSub"></p><ul class="list" data-t="faceList" data-html></ul>
+  <div class="boost"><h4 data-t="boostEy"></h4><p data-t="faceBoost"></p></div></div>
+</div></section>
+
+<section class="sec mist mod" data-m="hair"><div class="wrap modgrid">
+  <figure class="modimg" style="margin:0"><img loading="lazy" src="https://stemcellscolombia.com/wp-content/uploads/2026/09/cabello-1-scaled.jpg" alt=""><figcaption data-t="hairCap"></figcaption></figure>
+  <div><div class="eyebrow"><span class="dot"></span><span data-t="hairEy"></span></div><h2 class="h2" data-t="hairH"></h2><p class="sub" data-t="hairSub"></p><ul class="list" data-t="hairList" data-html></ul>
+  <div class="boost"><h4 data-t="boostEy"></h4><p data-t="hairBoost"></p></div>
+  <div class="soft" data-t="hairExtra"></div></div>
+</div></section>
+
+<section class="sec mod" data-m="pshot"><div class="wrap modgrid modgrid--rev">
+  <figure class="modimg" style="margin:0"><img loading="lazy" src="https://stemcellscolombia.com/wp-content/uploads/2026/09/hombre-sonriendo.jpg" alt=""><figcaption data-t="psCap"></figcaption></figure>
+  <div><div class="eyebrow"><span class="dot"></span><span data-t="psEy"></span></div><h2 class="h2" data-t="psH"></h2><p class="sub" data-t="psSub"></p><ul class="list" data-t="psList" data-html></ul>
+  <div class="boost"><h4 data-t="boostEy"></h4><p data-t="psBoost"></p></div></div>
+</div></section>
+
+<section class="sec mist mod" data-m="joint">
+  <div class="wrap modgrid">
+    <figure class="modimg" style="margin:0"><img loading="lazy" src="https://stemcellscolombia.com/wp-content/uploads/2026/07/scc-imaging.jpg" alt=""><figcaption data-t="jCap"></figcaption></figure>
+    <div><div class="eyebrow"><span class="dot"></span><span data-t="jEy"></span></div><h2 class="h2" data-t="jH"></h2><p class="sub" data-t="jSub"></p><ul class="list" data-t="jList" data-html></ul></div>
+  </div>
+  <div class="wrap">
+    <h3 class="h3" style="margin-top:56px;font-size:clamp(22px,2.4vw,30px)" data-t="wH"></h3>
+    <div class="weeks">
+      <div class="week" style="--w:25%"><span data-t="w1k"></span><h3 data-t="w1h"></h3><div data-t="w1" data-html></div></div>
+      <div class="week" style="--w:50%"><span data-t="w2k"></span><h3 data-t="w2h"></h3><div data-t="w2" data-html></div></div>
+      <div class="week" style="--w:75%"><span data-t="w3k"></span><h3 data-t="w3h"></h3><div data-t="w3" data-html></div></div>
+      <div class="week" style="--w:100%"><span data-t="w4k"></span><h3 data-t="w4h"></h3><div data-t="w4" data-html></div></div>
+    </div>
+    <div class="soft" data-t="wCall"></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="all noprint" id="allBox"></div>
+    <div class="diet" style="margin-top:18px">
+      <div class="diet__img" role="img" aria-label=""></div>
+      <div class="diet__txt">
+        <div class="eyebrow" style="color:var(--mint)"><span class="dot"></span><span data-t="dietEy"></span></div>
+        <h2 class="h2" data-t="dietH"></h2>
+        <p data-t="dietP"></p>
+        <a class="btn btn--main" href="recursos/Anti_Inflammatory_Lifestyle_Guide.pdf" target="_blank" rel="noopener" data-t="dietBtn"></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec mist">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span><span data-t="medEy"></span></div>
+    <h2 class="h2" data-t="medH"></h2>
+    <p class="sub" data-t="medSub"></p>
+    <div class="gal">
+      <div style="background-image:url(https://stemcellscolombia.com/wp-content/uploads/2026/07/scc-medellin-slide-1.jpg)"></div>
+      <div style="background-image:url(https://stemcellscolombia.com/wp-content/uploads/2026/07/scc-medellin-slide-2.jpg)"></div>
+      <div style="background-image:url(https://stemcellscolombia.com/wp-content/uploads/2026/07/scc-medellin-slide-3.jpg)"></div>
+      <div style="background-image:url(https://stemcellscolombia.com/wp-content/uploads/2026/07/scc-medellin-slide-4.jpg)"></div>
+      <div style="background-image:url(https://stemcellscolombia.com/wp-content/uploads/2026/09/scc-incodol-lobby-1536x1024.jpg)"></div>
+    </div>
+    <div class="places">
+      <div><h3 data-t="goH"></h3><ul id="goList"></ul></div>
+      <div><h3 data-t="eatH"></h3><ul id="eatList"></ul></div>
+    </div>
+    <div class="soft" data-t="rappi"></div>
+  </div>
+</section>
+
+<section class="sec dark">
+  <div class="wrap ref">
+    <div class="ref__big grad">5%</div>
+    <div>
+      <div class="eyebrow"><span class="dot"></span><span data-t="refEy"></span></div>
+      <h2 class="h2" data-t="refH"></h2>
+      <p class="sub" data-t="refSub"></p>
+      <p class="sub" style="margin-top:22px;font-weight:600;color:#fff" data-t="condsLead"></p>
+      <div class="conds" data-t="conds" data-html></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span><span data-t="moreEy"></span></div>
+    <h2 class="h2" data-t="moreH"></h2>
+    <div class="more">
+      <div><span style="font-size:28px">🧪</span><b data-t="m1h"></b><p data-t="m1"></p></div>
+      <div><span style="font-size:28px">🦷</span><b data-t="m2h"></b><p data-t="m2"></p></div>
+      <div><span style="font-size:28px">💇</span><b data-t="m3h"></b><p data-t="m3"></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec mist">
+  <div class="wrap contact">
+    <img src="guia/mia.jpg" alt="Mia Angel">
+    <div>
+      <div class="eyebrow"><span class="dot"></span><span data-t="cEy"></span></div>
+      <h2 class="h2">Mia Angel</h2>
+      <p class="sub" data-t="cSub"></p>
+      <div class="rows">
+        <a href="https://wa.me/573108819333" target="_blank" rel="noopener">💬 WhatsApp · +57 310 881 9333</a>
+        <a href="mailto:info@stemcellscolombia.com">✉️ info@stemcellscolombia.com</a>
+        <a href="https://stemcellscolombia.com" target="_blank" rel="noopener">🌐 stemcellscolombia.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot"><div class="wrap" data-t="foot"></div></footer>
+
+<script>
+const T = {
+en:{
+  eyebrow:'Stem Cells Colombia · Patient guide', kicker:'Before, during and after your treatment', h1a:'Getting', h1b:'Ready',
+  heroSub:'Everything you need to arrive prepared and recover well — this guide only shows the care that applies to your treatment.',
+  ctaStart:'Start reading ↓', ctaPdf:'⬇ Save as PDF',
+  safeEy:'Your safety comes first', safeH:'A medical team by your side, every step of the way',
+  safeSub:'Your procedure is carried out by highly experienced professionals. If you have any question at any moment, write to us — we are here to help.',
+  p1:'years of minimum experience of each professional on our team', p2:'single point of contact for your whole trip', p3:'a direct WhatsApp line with your team during your treatment',
+  routeEy:'Your treatment in three steps', routeH:'Simple, clear and guided',
+  s1h:'Before', s1:'<li>Sleep well, rest, hydrate and eat well.</li><li>No alcohol or recreational drugs.</li><li>Follow the <a href="#diet">anti-inflammatory diet</a>.</li>',
+  s2h:'During', s2:'<li>Our team guides you through the whole process.</li><li>Your coordinator handles times, rides and appointments.</li>',
+  s3h:'After', s3:'<li>Every patient and every condition is different.</li><li>Our medical team tells you exactly what applies to your case.</li><li>Follow the care below for your treatment.</li>',
+  rulesEy:'The golden rules', rulesH:'Five habits that protect your results', rulesSub:'They apply after any of our treatments. Your care section below adds what is specific to yours.',
+  rNsaid:'No anti-inflammatory medication for 8–10 weeks', rNsaidP:'Ibuprofen, Advil, Motrin, Aleve, Celebrex, Mobic — and natural “anti-inflammatories” like turmeric, CBD or arnica. They can interfere with the regenerative process.',
+  rWater:'No pool, hot tub, sauna, jacuzzi or steam room', rWaterP:'Give the application sites time to close. Also avoid intense sun exposure.',
+  rPets:'No animal contact at the application site for 1 week', rPetsP:'It prevents allergic reactions and infections.',
+  rMove:'Return to exercise gradually', rMoveP:'Light activity first. Your section below tells you when.',
+  rDiet:'Keep the anti-inflammatory diet', rDietP:'And no alcohol or recreational drugs while you recover.',
+  okTake:'You may take acetaminophen (Tylenol) — or the prescription your doctor gives you.',
+  d8:'first 8 days', d7:'1 week', tagFor:'for',
+  ivEy:'Your care · IV treatment', ivH:'After your IV treatment', ivCap:'IV treatment, with our team by your side',
+  ivSub:'Each person reacts differently: some people feel nothing in particular and others simply want to rest.',
+  ivList:'<li><i>🛋️</i><span><b>3 days without intense physical activity.</b> Then start gradually — the gym is fine from day 3.</span></li><li><i>🌊</i><span><b>No pool, hot tub, sauna or jacuzzi</b> for the first 8 days.</span></li><li><i>🥗</i><span><b>Anti-inflammatory diet</b>, and no alcohol or recreational drugs for 2 weeks after your treatment.</span></li>',
+  faceEy:'Your care · Face', faceH:'After your facial treatment', faceCap:'Facial rejuvenation at Stem Cells Colombia',
+  faceSub:'Your skin may look a little puffy for 2–3 days — sometimes a bit longer, depending on your skin.',
+  faceList:'<li><i>😴</i><span><b>Don’t sleep face down</b> for the first 2 days.</span></li><li><i>☀️</i><span><b>No pool, sauna, steam room or intense sun</b> for 1 week.</span></li><li><i>🏃</i><span><b>Intense exercise from day 3</b>, gradually.</span></li>',
+  boostEy:'Keep your results', faceBoost:'A booster with exosomes or PRP is recommended from one month after your treatment, for 3 months — you can do it near home. Then PRP every six months, or as your dermatologist advises.',
+  hairEy:'Your care · Hair', hairH:'After your hair treatment', hairCap:'Hair restoration at Stem Cells Colombia',
+  hairSub:'Your scalp may look a little puffy for 2–3 days — sometimes a bit longer, depending on your skin.',
+  hairList:'<li><i>😴</i><span><b>Don’t sleep face down</b> for the first 2 days.</span></li><li><i>☀️</i><span><b>No pool, sauna, steam room or intense sun</b> for 1 week.</span></li><li><i>🏃</i><span><b>Intense exercise from day 3</b>, gradually.</span></li>',
+  hairBoost:'A PRP booster is essential: from one month after your treatment, for 3–4 months — you can do it near home. Then PRP every six months, or as your dermatologist advises.',
+  hairExtra:'<b>Helpful at home:</b> Nutrafol supplements, biotin, rosemary-oil shampoo and goat-milk shampoo.',
+  psEy:'Your care · P-Shot / V-Shot', psH:'After your P-Shot or V-Shot', psCap:'Sexual wellness treatment',
+  psSub:'You may notice mild tenderness at the application site for a short time, and some people feel a little tired the first day. Follow your doctor’s orders.',
+  psList:'<li><i>🏋️</i><span><b>Gym from day 3.</b></span></li><li><i>🌊</i><span><b>No pool, hot tub, sauna or jacuzzi</b> for the first 8 days.</span></li>',
+  psBoost:'A PRP booster is essential every month for 3–4 months for the best results. Then every 6 months, or as your doctor recommends.',
+  jEy:'Your care · Joint, neck or back', jH:'After your joint or spine application', jCap:'Ultrasound-guided application',
+  jSub:'On the first day you will likely notice inflammation in the treated area. That is your body’s own healing process at work — this is why we don’t use anti-inflammatory medication.',
+  jList:'<li><i>🧴</i><span><b>Analgesic creams or gels</b> (Biofreeze, Traumeel) help you feel comfortable.</span></li><li><i>💊</i><span><b>Acetaminophen / Tylenol</b> or the prescription your doctor gives you.</span></li><li><i>🌊</i><span><b>No pool, jacuzzi, bathtub, sauna, steam room or intense sun</b> for 1 week.</span></li>',
+  wH:'Your first month, week by week',
+  w1k:'Week 1', w1h:'Rest and light activity', w1:'<p>Light everyday activity only.</p><p>First 24–48 h: no more than 30 minutes on your feet at a time.</p><p>Moving gently is better than staying still.</p>',
+  w2k:'Week 2', w2h:'Back to your routine', w2:'<p>Your regular routine, without strenuous activity.</p><p>Stretching or yoga are fine. No running or weights until week 3.</p>',
+  w3k:'Week 3', w3h:'Physical therapy', w3:'<p>More active physical therapy and very light resistance.</p><p>Avoid compression: squats, leg lifts, calf raises, twists. Listen to your body.</p>',
+  w4k:'Week 4', w4h:'Light running', w4:'<p>Light running on even, soft ground, a treadmill or a track.</p><p>Progress slowly to your normal workout — never to the point of pain in the treated area.</p>',
+  wCall:'<b>Some soreness for a few days is normal.</b> If the pain becomes severe, write to us right away on WhatsApp.',
+  showAll:'Show the care for all treatments', showMine:'Show only my treatment',
+  dietEy:'Your nutrition', dietH:'Anti-Inflammatory Lifestyle Guide', dietP:'Nutrition, movement, recovery and recipes for a healthier daily routine — before and after your treatment.', dietBtn:'Open the guide (PDF) →',
+  medEy:'Enjoy Medellín', medH:'The city of eternal spring', medSub:'Between appointments, take some time for yourself. A few favorites from our team:',
+  goH:'Where to go', eatH:'Where to eat',
+  rappi:'<b>Rappi</b> — the app to order food, medication and groceries. Safe, inexpensive and very popular in Colombia (Android and iPhone).',
+  refEy:'Refer. Heal. Share hope.', refH:'Your referral can change a life', refSub:'For each person you refer, you get a 5% credit toward your next treatment. Refer several people and the credits add up — up to a fully covered treatment.',
+  condsLead:'Stem cell therapy may help with:',
+  conds:'<span>Arthritis & sports injuries</span><span>Face & hair</span><span>Wellness & longevity</span><span>Chronic pain</span><span>Autoimmune, neurodegenerative & respiratory conditions</span><span>Sexual health</span><span>Diabetes</span>',
+  moreEy:'More for you in Medellín', moreH:'We can connect you with top-quality specialists',
+  m1h:'Tests & specialists', m1:'Complete blood lab, consultations with specialists and a full check-up (blood test, ultrasound, chest X-ray, stress test, echocardiogram and more).',
+  m2h:'Ultra-precision dentistry', m2:'Oral rehabilitation, periodontal surgery, endodontics, maxillofacial surgery and smile design (veneers, crowns, implants).',
+  m3h:'Hair transplant', m3:'Hair transplant, PRP for hair and treatments for hair loss and scalp health.',
+  cEy:'Contact', cSub:'Patient Care Coordinator · Stem Cells Colombia. Any question, any time.',
+  foot:'Stem Cells Colombia · Advanced medicine, renewing lives · Medellín, Colombia',
+  tr:{iv:'IV treatment',face:'Face',hair:'Hair',pshot:'P-Shot / V-Shot',joint:'Joint / spine'}, forYou:'Your guide covers:'
+},
+es:{
+  eyebrow:'Stem Cells Colombia · Guía del paciente', kicker:'Antes, durante y después de tu tratamiento', h1a:'Getting', h1b:'Ready',
+  heroSub:'Todo lo que necesitas para llegar preparado y recuperarte bien. Esta guía solo te muestra los cuidados de tu tratamiento.',
+  ctaStart:'Empezar a leer ↓', ctaPdf:'⬇ Guardar en PDF',
+  safeEy:'Tu seguridad primero', safeH:'Un equipo médico a tu lado en cada paso',
+  safeSub:'Tu procedimiento lo realizan profesionales con mucha experiencia. Si tienes cualquier pregunta, en cualquier momento, escríbenos: estamos para ayudarte.',
+  p1:'años de experiencia mínima de cada profesional de nuestro equipo', p2:'solo contacto para todo tu viaje', p3:'línea directa por WhatsApp con tu equipo durante tu tratamiento',
+  routeEy:'Tu tratamiento en tres pasos', routeH:'Simple, claro y acompañado',
+  s1h:'Antes', s1:'<li>Duerme bien, descansa, hidrátate y come bien.</li><li>Nada de alcohol ni drogas.</li><li>Sigue la <a href="#diet">dieta antiinflamatoria</a>.</li>',
+  s2h:'Durante', s2:'<li>Nuestro equipo te guía en todo el proceso.</li><li>Tu coordinador se encarga de horarios, traslados y citas.</li>',
+  s3h:'Después', s3:'<li>Cada paciente y cada condición son distintos.</li><li>Nuestro equipo médico te dice exactamente qué aplica a tu caso.</li><li>Sigue los cuidados de tu tratamiento, aquí abajo.</li>',
+  rulesEy:'Las reglas de oro', rulesH:'Cinco hábitos que cuidan tus resultados', rulesSub:'Aplican después de cualquiera de nuestros tratamientos. Tu sección de cuidados, más abajo, agrega lo propio del tuyo.',
+  rNsaid:'Nada de antiinflamatorios durante 8 a 10 semanas', rNsaidP:'Ibuprofeno, Advil, Motrin, Aleve, Celebrex, Mobic, y "antiinflamatorios" naturales como cúrcuma, CBD o árnica. Pueden interferir con el proceso regenerativo.',
+  rWater:'Nada de piscina, tina caliente, sauna, jacuzzi ni baño turco', rWaterP:'Dale tiempo a los puntos de aplicación para cerrar. Evita también el sol intenso.',
+  rPets:'Sin contacto de animales con la zona tratada durante 1 semana', rPetsP:'Así se evitan alergias e infecciones.',
+  rMove:'Vuelve al ejercicio poco a poco', rMoveP:'Primero actividad suave. Tu sección de abajo te dice cuándo.',
+  rDiet:'Mantén la dieta antiinflamatoria', rDietP:'Y nada de alcohol ni drogas mientras te recuperas.',
+  okTake:'Puedes tomar acetaminofén (Tylenol), o la fórmula que te dé tu doctor.',
+  d8:'primeros 8 días', d7:'1 semana', tagFor:'para',
+  ivEy:'Tus cuidados · Tratamiento IV', ivH:'Después de tu tratamiento IV', ivCap:'Tratamiento IV, con nuestro equipo a tu lado',
+  ivSub:'Cada persona reacciona distinto: algunas no sienten nada en particular y otras solo quieren descansar.',
+  ivList:'<li><i>🛋️</i><span><b>3 días sin actividad física intensa.</b> Después, vuelve de a poco: el gimnasio está bien desde el día 3.</span></li><li><i>🌊</i><span><b>Nada de piscina, tina caliente, sauna ni jacuzzi</b> los primeros 8 días.</span></li><li><i>🥗</i><span><b>Dieta antiinflamatoria</b>, y nada de alcohol ni drogas durante las 2 semanas siguientes al tratamiento.</span></li>',
+  faceEy:'Tus cuidados · Rostro', faceH:'Después de tu tratamiento facial', faceCap:'Rejuvenecimiento facial en Stem Cells Colombia',
+  faceSub:'Tu piel puede verse un poco inflamada durante 2 o 3 días, a veces un poco más, según tu piel.',
+  faceList:'<li><i>😴</i><span><b>No duermas boca abajo</b> los primeros 2 días.</span></li><li><i>☀️</i><span><b>Nada de piscina, sauna, baño turco ni sol intenso</b> durante 1 semana.</span></li><li><i>🏃</i><span><b>Ejercicio intenso desde el día 3</b>, de a poco.</span></li>',
+  boostEy:'Mantén tus resultados', faceBoost:'Se recomienda un refuerzo con exosomas o PRP desde el mes del tratamiento, durante 3 meses; lo puedes hacer cerca de casa. Después, PRP cada seis meses o según te indique tu dermatólogo.',
+  hairEy:'Tus cuidados · Cabello', hairH:'Después de tu tratamiento capilar', hairCap:'Restauración capilar en Stem Cells Colombia',
+  hairSub:'Tu cuero cabelludo puede verse un poco inflamado durante 2 o 3 días, a veces un poco más, según tu piel.',
+  hairList:'<li><i>😴</i><span><b>No duermas boca abajo</b> los primeros 2 días.</span></li><li><i>☀️</i><span><b>Nada de piscina, sauna, baño turco ni sol intenso</b> durante 1 semana.</span></li><li><i>🏃</i><span><b>Ejercicio intenso desde el día 3</b>, de a poco.</span></li>',
+  hairBoost:'El refuerzo con PRP es indispensable: desde el mes del tratamiento, durante 3 a 4 meses; lo puedes hacer cerca de casa. Después, PRP cada seis meses o según te indique tu dermatólogo.',
+  hairExtra:'<b>Te ayuda en casa:</b> suplementos Nutrafol, biotina, champú de aceite de romero y champú de leche de cabra.',
+  psEy:'Tus cuidados · P-Shot / V-Shot', psH:'Después de tu P-Shot o V-Shot', psCap:'Tratamiento de bienestar sexual',
+  psSub:'Puedes notar una leve sensibilidad en la zona por poco tiempo, y algunas personas se sienten un poco cansadas el primer día. Sigue las indicaciones de tu doctor.',
+  psList:'<li><i>🏋️</i><span><b>Gimnasio desde el día 3.</b></span></li><li><i>🌊</i><span><b>Nada de piscina, tina caliente, sauna ni jacuzzi</b> los primeros 8 días.</span></li>',
+  psBoost:'El refuerzo con PRP es indispensable cada mes durante 3 a 4 meses para el mejor resultado. Después, cada 6 meses o según te indique tu doctor.',
+  jEy:'Tus cuidados · Articulación, cuello o columna', jH:'Después de tu aplicación en articulación o columna', jCap:'Aplicación guiada por ecografía',
+  jSub:'El primer día seguramente notarás inflamación en la zona tratada. Es tu propio proceso de sanación trabajando, por eso no usamos antiinflamatorios.',
+  jList:'<li><i>🧴</i><span><b>Cremas o geles analgésicos</b> (Biofreeze, Traumeel) te ayudan a estar cómodo.</span></li><li><i>💊</i><span><b>Acetaminofén / Tylenol</b> o la fórmula que te dé tu doctor.</span></li><li><i>🌊</i><span><b>Nada de piscina, jacuzzi, tina, sauna, baño turco ni sol intenso</b> durante 1 semana.</span></li>',
+  wH:'Tu primer mes, semana a semana',
+  w1k:'Semana 1', w1h:'Descanso y actividad suave', w1:'<p>Solo actividad suave del día a día.</p><p>Primeras 24–48 h: no más de 30 minutos de pie seguidos.</p><p>Moverte suave es mejor que quedarte quieto.</p>',
+  w2k:'Semana 2', w2h:'De vuelta a tu rutina', w2:'<p>Tu rutina normal, sin actividad exigente.</p><p>Estiramientos o yoga, sí. Correr o pesas, desde la semana 3.</p>',
+  w3k:'Semana 3', w3h:'Terapia física', w3:'<p>Terapia física más activa y resistencia muy liviana.</p><p>Evita la compresión: sentadillas, elevaciones de pierna, de pantorrilla, giros. Escucha a tu cuerpo.</p>',
+  w4k:'Semana 4', w4h:'Trote suave', w4:'<p>Trote suave en terreno plano y blando, caminadora o pista.</p><p>Avanza despacio hacia tu entrenamiento normal, nunca hasta sentir dolor en la zona tratada.</p>',
+  wCall:'<b>Algo de molestia unos días es normal.</b> Si el dolor se vuelve fuerte, escríbenos de inmediato por WhatsApp.',
+  showAll:'Ver los cuidados de todos los tratamientos', showMine:'Ver solo mi tratamiento',
+  dietEy:'Tu alimentación', dietH:'Guía de estilo de vida antiinflamatorio', dietP:'Alimentación, movimiento, recuperación y recetas para una rutina más sana, antes y después de tu tratamiento. (En inglés.)', dietBtn:'Abrir la guía (PDF) →',
+  medEy:'Disfruta Medellín', medH:'La ciudad de la eterna primavera', medSub:'Entre cita y cita, date un tiempo para ti. Algunos favoritos de nuestro equipo:',
+  goH:'A dónde ir', eatH:'Dónde comer',
+  rappi:'<b>Rappi</b>: la app para pedir comida, medicamentos y mercado. Segura, económica y muy popular en Colombia (Android y iPhone).',
+  refEy:'Refiere. Sana. Comparte esperanza.', refH:'Tu referido puede cambiar una vida', refSub:'Por cada persona que refieras, recibes un crédito del 5% para tu próximo tratamiento. Si refieres a varias, los créditos se suman, hasta cubrir el tratamiento completo.',
+  condsLead:'La terapia con células madre puede ayudar con:',
+  conds:'<span>Artritis y lesiones deportivas</span><span>Rostro y cabello</span><span>Bienestar y longevidad</span><span>Dolor crónico</span><span>Condiciones autoinmunes, neurodegenerativas y respiratorias</span><span>Salud sexual</span><span>Diabetes</span>',
+  moreEy:'Más para ti en Medellín', moreH:'Te conectamos con especialistas de primer nivel',
+  m1h:'Exámenes y especialistas', m1:'Laboratorio completo, consultas con especialistas y chequeo total (sangre, ecografía abdominal, rayos X de tórax, prueba de esfuerzo, ecocardiograma y más).',
+  m2h:'Odontología de ultra precisión', m2:'Rehabilitación oral, cirugía periodontal, endodoncia, cirugía maxilofacial y diseño de sonrisa (carillas, coronas, implantes).',
+  m3h:'Trasplante capilar', m3:'Trasplante de cabello, PRP capilar y tratamientos para la caída del cabello y la salud del cuero cabelludo.',
+  cEy:'Contacto', cSub:'Patient Care Coordinator · Stem Cells Colombia. Cualquier pregunta, cuando sea.',
+  foot:'Stem Cells Colombia · Medicina avanzada, renovando vidas · Medellín, Colombia',
+  tr:{iv:'Tratamiento IV',face:'Rostro',hair:'Cabello',pshot:'P-Shot / V-Shot',joint:'Articulación / columna'}, forYou:'Tu guía incluye:'
+}};
+const GO = [
+  ['Comuna 13 tour',''],['Guatapé & El Peñol Rock',''],['Botero Museum · Museo de Antioquia',''],['Botanical Garden · Jardín Botánico',''],['Parque Arví',''],['Santa Elena',''],['El Tesoro Shopping Mall','']];
+const EAT = [['Colosal','fusion · fusión'],['Relato','fusion · fusión'],['El Cielo','fusion · fusión'],['Carmen','Colombian · colombiana'],['Mundo Verde','healthy · saludable'],['Mondongo’s','Colombian · colombiana'],['Kaime','veggie']];
+const ALL = ['iv','face','hair','pshot','joint'];
+const ALIAS = {back:'joint',spine:'joint',neck:'joint',vshot:'pshot',co2:'face',exo:'face',facial:'face'};
+const q = new URLSearchParams(location.search);
+let lang = (q.get('l') || q.get('lang') || (navigator.language||'en')).slice(0,2) === 'es' ? 'es' : 'en';
+let mine = Array.from(new Set(String(q.get('t')||'').toLowerCase().split(/[,\s]+/).map(x=>ALIAS[x]||x).filter(x=>ALL.indexOf(x)>=0)));
+let showAll = !mine.length;
+const maps = s => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s + ' Medellín');
+function render(){
+  const L = T[lang]; document.documentElement.lang = lang;
+  document.querySelectorAll('[data-t]').forEach(el => { const v = L[el.dataset.t]; if(v == null) return; if(el.hasAttribute('data-html') || /<[a-z]/.test(v)) el.innerHTML = v; else el.textContent = v; });
+  document.querySelectorAll('.lang button').forEach(b => b.classList.toggle('on', b.dataset.l === lang));
+  const act = showAll ? ALL : mine;
+  document.querySelectorAll('.mod').forEach(m => m.classList.toggle('on', act.indexOf(m.dataset.m) >= 0));
+  // alternar fondos de los módulos visibles para que no queden dos iguales seguidos
+  let k = 0; document.querySelectorAll('.mod.on').forEach(m => { m.classList.toggle('mist', k++ % 2 === 0); });
+  document.getElementById('chips').innerHTML = (mine.length ? '<span class="chip" style="background:none;border:0;padding-left:0">' + L.forYou + '</span>' : '') + (mine.length ? mine : ALL).map(t => '<span class="chip">✓ ' + L.tr[t] + '</span>').join('');
+  // reglas: los plazos de agua dependen de los tratamientos del paciente
+  const has = t => act.indexOf(t) >= 0;
+  const d8 = has('iv') || has('pshot'), d7 = has('face') || has('hair') || has('joint');
+  const tags = [];
+  if(d8) tags.push('<span class="tag">' + L.d8 + ' · ' + [has('iv') && L.tr.iv, has('pshot') && L.tr.pshot].filter(Boolean).join(', ') + '</span>');
+  if(d7) tags.push('<span class="tag">' + L.d7 + ' · ' + [has('face') && L.tr.face, has('hair') && L.tr.hair, has('joint') && L.tr.joint].filter(Boolean).join(', ') + '</span>');
+  const R = [['💊', L.rNsaid, L.rNsaidP, ''], ['🌊', L.rWater, L.rWaterP, tags.join('')], ['🐾', L.rPets, L.rPetsP, ''], ['🏃', L.rMove, L.rMoveP, ''], ['🥗', L.rDiet, L.rDietP, '']];
+  document.getElementById('rulesBox').innerHTML = R.map(r => '<div class="rule"><div class="rule__ic">' + r[0] + '</div><div><h3 class="h3">' + r[1] + '</h3><p>' + r[2] + '</p>' + r[3] + '</div></div>').join('');
+  document.getElementById('allBox').innerHTML = mine.length ? '<a onclick="showAll=!showAll;render()">' + (showAll ? L.showMine : L.showAll) + '</a>' : '';
+  const map = 'Google Maps →';
+  document.getElementById('goList').innerHTML = GO.map(g => '<li><span>' + g[0] + '</span><a href="' + maps(g[0].split(' · ')[0]) + '" target="_blank" rel="noopener">' + map + '</a></li>').join('');
+  document.getElementById('eatList').innerHTML = EAT.map(e => '<li><span>' + e[0] + ' <em>' + (lang === 'es' ? e[1].split(' · ').pop() : e[1].split(' · ')[0]) + '</em></span><a href="' + maps(e[0] + ' restaurante') + '" target="_blank" rel="noopener">' + map + '</a></li>').join('');
+  document.title = (lang === 'es' ? 'Tu Getting Ready' : 'Your Getting Ready') + ' — Stem Cells Colombia';
+}
+document.querySelectorAll('.lang button').forEach(b => b.onclick = () => { lang = b.dataset.l; render(); });
+document.querySelector('.diet').id = 'diet';
+render();
+</script>
+</body>
+</html>
