@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Getting Ready — Stem Cells Colombia</title>
 <meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
 <link rel="icon" href="https://stemcellscolombia.com/wp-content/uploads/2025/04/cropped-stem-azul-rey-2-32x32.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
@@ -56,6 +57,18 @@ img{display:block;max-width:100%}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
 .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(126,240,217,.14);border:1px solid rgba(126,240,217,.4);font:600 14px Poppins,sans-serif;color:#dffcf6}
 .hero__cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+
+/* GRACIAS */
+.thanks{position:relative;margin-top:-70px;z-index:3}
+.thanks__card{background:#fff;border-radius:30px;box-shadow:0 24px 60px rgba(5,22,40,.14);padding:clamp(28px,4.5vw,56px);display:grid;grid-template-columns:auto 1fr;gap:clamp(18px,3vw,40px);align-items:start;border:1px solid var(--line)}
+.thanks__mark{font:800 clamp(70px,9vw,120px)/.7 Poppins,sans-serif;color:transparent;background:linear-gradient(135deg,#37C6D0,#7EF0D9);-webkit-background-clip:text;background-clip:text}
+.thanks h2{font-size:clamp(30px,4vw,48px);line-height:1.05;font-weight:800;color:var(--deep)}
+.thanks p{font-size:clamp(17px,1.5vw,19px);line-height:1.7;color:var(--mut);margin-top:16px;max-width:720px}
+.thanks__sign{margin-top:22px;display:flex;align-items:center;gap:12px;font:600 15px Poppins,sans-serif;color:var(--deep)}
+.thanks__sign span{display:block;font:400 14px 'Source Sans 3',sans-serif;color:var(--mut)}
+.thanks__line{width:36px;height:3px;border-radius:3px;background:linear-gradient(90deg,#37C6D0,#7EF0D9)}
+@media (max-width:640px){ .thanks{margin-top:-40px} .thanks__card{grid-template-columns:1fr} .thanks__mark{font-size:64px} }
+@media print{ .thanks{margin-top:0} .thanks__card{box-shadow:none} }
 
 /* PROMESA */
 .promise{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
@@ -201,7 +214,19 @@ img{display:block;max-width:100%}
   </div>
 </header>
 
-<section class="sec mist">
+<section class="thanks"><div class="wrap">
+  <div class="thanks__card">
+    <div class="thanks__mark" aria-hidden="true">“</div>
+    <div>
+      <h2 id="thanksH"></h2>
+      <p data-t="thanksP"></p>
+      <p data-t="thanksP2"></p>
+      <div class="thanks__sign"><div class="thanks__line"></div><div><b data-t="thanksSign"></b><span data-t="thanksRole"></span></div></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec mist" style="margin-top:-60px;padding-top:calc(clamp(56px,8vw,110px) + 60px)">
   <div class="wrap">
     <div class="eyebrow"><span class="dot"></span><span data-t="safeEy"></span></div>
     <h2 class="h2" data-t="safeH"></h2>
@@ -369,6 +394,10 @@ en:{
   eyebrow:'Stem Cells Colombia · Patient guide', kicker:'Before, during and after your treatment', h1a:'Getting', h1b:'Ready',
   heroSub:'Everything you need to arrive prepared and recover well — this guide only shows the care that applies to your treatment.',
   ctaStart:'Start reading ↓', ctaPdf:'⬇ Save as PDF',
+  thanksH:'Thank you for choosing us.', thanksHn:'Thank you, {n}.',
+  thanksP:'Traveling to another country for your treatment is a big decision, and you trusted us with it. We don’t take that lightly.',
+  thanksP2:'From today, our whole team is working so that every detail of your experience is taken care of. This guide is the first step: everything you need to arrive ready and recover well.',
+  thanksSign:'Alejandro & the Stem Cells Colombia team', thanksRole:'Scheduling & Patient Experience', kickerN:'{n}, this guide was made for you',
   safeEy:'Your safety comes first', safeH:'A medical team by your side, every step of the way',
   safeSub:'Your procedure is carried out by highly experienced professionals. If you have any question at any moment, write to us — we are here to help.',
   p1:'years of experience, at minimum, for every professional on our team', p2:'single point of contact for your whole trip', p3:'a direct WhatsApp line with your team during your treatment',
@@ -430,6 +459,10 @@ es:{
   eyebrow:'Stem Cells Colombia · Guía del paciente', kicker:'Antes, durante y después de tu tratamiento', h1a:'Getting', h1b:'Ready',
   heroSub:'Todo lo que necesitas para llegar preparado y recuperarte bien. Esta guía solo te muestra los cuidados de tu tratamiento.',
   ctaStart:'Empezar a leer ↓', ctaPdf:'⬇ Guardar en PDF',
+  thanksH:'Gracias por elegirnos.', thanksHn:'Gracias, {n}.',
+  thanksP:'Viajar a otro país por tu tratamiento es una decisión grande, y nos la confiaste a nosotros. Eso no lo tomamos a la ligera.',
+  thanksP2:'Desde hoy, todo nuestro equipo trabaja para que cada detalle de tu experiencia esté cuidado. Esta guía es el primer paso: todo lo que necesitas para llegar listo y recuperarte bien.',
+  thanksSign:'Alejandro y el equipo de Stem Cells Colombia', thanksRole:'Scheduling & Patient Experience', kickerN:'{n}, esta guía es para ti',
   safeEy:'Tu seguridad primero', safeH:'Un equipo médico a tu lado en cada paso',
   safeSub:'Tu procedimiento lo realizan profesionales con mucha experiencia. Si tienes cualquier pregunta, en cualquier momento, escríbenos: estamos para ayudarte.',
   p1:'años de experiencia, como mínimo, de cada profesional de nuestro equipo', p2:'único contacto para todo tu viaje', p3:'línea directa por WhatsApp con tu equipo durante tu tratamiento',
@@ -496,6 +529,10 @@ const q = new URLSearchParams(location.search);
 let lang = (q.get('l') || q.get('lang') || (navigator.language||'en')).slice(0,2) === 'es' ? 'es' : 'en';
 let mine = Array.from(new Set(String(q.get('t')||'').toLowerCase().split(/[,\s]+/).map(x=>ALIAS[x]||x).filter(x=>ALL.indexOf(x)>=0)));
 let showAll = !mine.length;
+let nombre = '';
+try{ const raw = q.get('n'); if(raw){ const b = raw.replace(/-/g,'+').replace(/_/g,'/'); nombre = decodeURIComponent(escape(atob(b + '==='.slice((b.length + 3) % 4)))); } }catch(_){ nombre = ''; }
+nombre = String(nombre).replace(/[^\p{L}\p{M}' -]/gu, '').trim().split(/\s+/)[0] || '';
+if(nombre) nombre = nombre.charAt(0).toLocaleUpperCase() + nombre.slice(1);
 const maps = s => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s + ' Medellín');
 function render(){
   const L = T[lang]; document.documentElement.lang = lang;
@@ -518,6 +555,8 @@ function render(){
   const map = 'Google Maps →';
   document.getElementById('goList').innerHTML = GO.map(g => '<li><span>' + g[0] + '</span><a href="' + maps(g[0].split(' · ')[0]) + '" target="_blank" rel="noopener">' + map + '</a></li>').join('');
   document.getElementById('eatList').innerHTML = EAT.map(e => '<li><span>' + e[0] + ' <em>' + (lang === 'es' ? e[1].split(' · ').pop() : e[1].split(' · ')[0]) + '</em></span><a href="' + maps(e[0] + ' restaurante') + '" target="_blank" rel="noopener">' + map + '</a></li>').join('');
+  document.getElementById('thanksH').textContent = nombre ? L.thanksHn.replace('{n}', nombre) : L.thanksH;
+  if(nombre) document.querySelector('[data-t="kicker"]').textContent = L.kickerN.replace('{n}', nombre);
   document.title = (lang === 'es' ? 'Tu Getting Ready' : 'Your Getting Ready') + ' — Stem Cells Colombia';
 }
 document.querySelectorAll('.lang button').forEach(b => b.onclick = () => { lang = b.dataset.l; render(); });
