@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Guía de Camilo · Scheduling SCC</title>
+<style>
+  :root{ --navy:#123A63; --aqua:#16A2B5; --ink:#0C1C2E; --gris:#5B6B7D; --fondo:#EEF2F6; --card:#fff; --linea:#DCE3EB; --verde:#1DAA61; }
+  *{ box-sizing:border-box }
+  body{ margin:0; background:var(--fondo); color:var(--ink); font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif }
+  .wrap{ max-width:720px; margin:0 auto; padding:24px 16px 48px }
+  header{ background:linear-gradient(150deg,var(--navy),var(--aqua)); color:#fff; border-radius:18px; padding:22px 20px }
+  header h1{ margin:0; font-size:26px }
+  header p{ margin:6px 0 0; opacity:.9 }
+  section{ background:var(--card); border-radius:16px; padding:18px 18px 8px; margin-top:16px; box-shadow:0 1px 2px rgba(12,28,46,.06),0 6px 18px rgba(12,28,46,.05) }
+  h2{ margin:0 0 10px; font-size:19px; color:var(--navy) }
+  ol,ul{ padding-left:22px; margin:0 0 12px }
+  li{ margin-bottom:8px }
+  b{ color:var(--ink) }
+  .tag{ display:inline-block; background:#E7F6F8; color:#0E7F93; border-radius:6px; padding:1px 7px; font-size:13px; font-weight:600 }
+  .wa{ background:var(--verde); color:#fff; border-radius:6px; padding:1px 7px; font-size:13px; font-weight:600 }
+  .no{ background:#FDECEC; border-radius:12px; padding:10px 14px; margin-bottom:12px }
+  .nota{ color:var(--gris); font-size:14px }
+  table{ width:100%; border-collapse:collapse; font-size:15px; margin-bottom:12px }
+  td{ border-top:1px solid var(--linea); padding:7px 4px; vertical-align:top }
+  td:first-child{ white-space:nowrap; font-weight:600; color:var(--navy); padding-right:10px }
+  a{ color:#0E7F93 }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Guía de Camilo</h1>
+    <p>Lo tuyo en el Scheduling, en 5 minutos al día.</p>
+  </header>
+
+  <section>
+    <h2>Lo que te toca</h2>
+    <p>Eres el Patient Care: acompañas a cada paciente <b>desde 7 días antes</b> de su tratamiento, durante su estadía en Medellín y <b>hasta la primera semana</b> después. Antes de eso y los controles de 1, 3 y 6 meses los lleva Alejo.</p>
+  </section>
+
+  <section>
+    <h2>Una sola vez (para empezar)</h2>
+    <ol>
+      <li>Abre el Scheduling: <a href="https://stemcellscolombia.github.io/magnolia-sextant-q7v2xd/" target="_blank" rel="noopener">stemcellscolombia.github.io/magnolia-sextant-q7v2xd</a> y oprime <b>Ctrl + F5</b>. Arriba debe decir <b>v8.99</b> o más.</li>
+      <li>Arriba a la derecha toca <b>"Sheets"</b> y entra con la cuenta <b>globality@</b> (te la da Alejo).</li>
+      <li>Ve a la pestaña <span class="tag">📲 Recordatorios</span>. En el recuadro azul de arriba pega el <b>enlace de la hoja</b> que te mandó Alejo y dale <b>Conectar</b>. Debe ponerse verde.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Cada mañana</h2>
+    <ol>
+      <li>Abre el Scheduling. Si el recuadro de arriba está <b>amarillo</b>, toca <b>"Sheets"</b> otra vez (la sesión dura 1 hora).</li>
+      <li>En <span class="tag">📲 Recordatorios</span> → <b>Esta semana</b>, mira <b>tu columna: Camilo · Patient Care</b>.</li>
+      <li>En cada tarjeta: <span class="wa">WhatsApp</span> abre el chat con el mensaje escrito. <b>Léelo, ajústalo si quieres y dale Enviar.</b></li>
+      <li>Vuelve y toca <b>✓ Hecho</b>. Desaparece de tu lista y Alejo también lo ve hecho.</li>
+    </ol>
+    <p class="nota">Rojo = atrasado · amarillo = hoy · gris = próximos días.</p>
+  </section>
+
+  <section>
+    <h2>Los mensajes que te van a salir</h2>
+    <table>
+      <tr><td>D-7</td><td>Te presentas: desde hoy tú lo acompañas.</td></tr>
+      <tr><td>D-3</td><td>Qué empacar y el clima de Medellín.</td></tr>
+      <tr><td>Víspera de llegar</td><td>"Mañana llegas" (y el conductor, si tiene transfer).</td></tr>
+      <tr><td>Noche antes</td><td>Su agenda de mañana, cita por cita (sale sola de su Schedule).</td></tr>
+      <tr><td>Antes del vuelo</td><td>"Mañana es tu vuelo de regreso".</td></tr>
+      <tr><td>D+1</td><td>¿Cómo amaneció?</td></tr>
+      <tr><td>D+7</td><td>¿Cómo va la primera semana?</td></tr>
+    </table>
+    <p class="nota">D = el día que empieza su tratamiento. Si un mensaje no aplica, igual tócale ✓ Hecho para que no siga saliendo.</p>
+  </section>
+
+  <section>
+    <h2>Si un paciente no quedó contento</h2>
+    <ol>
+      <li>En su tarjeta toca <b>Abrir</b> y baja a <b>Este paciente</b>. Si la tarjeta dice <b>"de otro PC"</b>, el termómetro está ahí mismo, en la tarjeta.</li>
+      <li>En <b>Termómetro</b> elige <b>Delicado</b>: desde ahí sus mensajes le ofrecen una llamada con su doctor en vez de un saludo normal.</li>
+      <li>Si Mia dice que ella lo maneja, elige <b>En pausa</b>: la app deja de proponerte mensajes para ese paciente.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Para ver la agenda de un paciente</h2>
+    <ul>
+      <li>Abajo a la derecha, <b>Pacientes</b> → tócalo para abrirlo.</li>
+      <li>Pestaña <span class="tag">📄 Schedule</span>: su agenda día por día, como la ve él.</li>
+      <li>Pestaña <span class="tag">📋 Citas</span>: sus citas y controles.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Lo que NO tocas (es de Alejo)</h2>
+    <div class="no">
+      <b>Llenar TODO</b>, crear eventos en <b>Calendar</b>, llenar las hojas de <b>Sheets</b> (Incodol, Innocell, VITAL) y cambiar fechas o tratamientos en la pestaña <b>Paciente</b>.
+    </div>
+    <p>Si ves algo raro (un error, un mensaje con un dato mal, una cita que no aparece): <b>pantallazo a Alejo</b> y él lo hace arreglar ese mismo día.</p>
+  </section>
+
+  <p class="nota" style="text-align:center;margin-top:20px">Stem Cells Colombia · Guía interna · 16 de octubre de 2026</p>
+</div>
+</body>
+</html>
